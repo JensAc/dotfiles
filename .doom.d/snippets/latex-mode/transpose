@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: transpose
+# key: t
+# --
+\T{$0}

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: mat
+# key: m
+# --
+\mat{$0}
