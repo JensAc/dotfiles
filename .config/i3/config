@@ -228,3 +228,4 @@ exec feh --bg-tile ~/Pictures/Wallpapers/blackwhitenoise.jpg
 # os keymaps
 bindsym Ctrl+1 exec --no-startup-id setxkbmap -v 7 de | grep -Po "^layout.* \K(.*)" > ~/.local/share/current_keymap.txt
 bindsym Ctrl+2 exec --no-startup-id setxkbmap -v 7 us | grep -Po "^layout.* \K(.*)" > ~/.local/share/current_keymap.txt
+bindsym Ctrl+3 exec --no-startup-id setxkbmap -v 7 de neo | grep -Po "^layout.* \K(.*)" > ~/.local/share/current_keymap.txt

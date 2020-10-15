@@ -93,11 +93,11 @@ cpu_usage {
 }
 
 cpu_temperature 0 {
-	format = "  %degrees°C"
+	format = " %degrees°C"
 }
 
 disk "/" {
-	format = "%avail"
+	format = " %avail"
 	prefix_type	= custom
 	low_threshold = 20
 	threshold_type = percentage_avail
@@ -112,7 +112,7 @@ disk "/data" {
 
 
 volume master {
-    format = "%volume   "
+    format = "%volume  "
     format_muted = "  "
     device = "default"
     mixer = "Master"
@@ -120,7 +120,7 @@ volume master {
 }
 
 read_file keymap {
-    format = "  %content"
+    format = " %content"
     format_bad =  "%title - %errno: %error"
     path = "/home/urbi/.local/share/current_keymap.txt"
     Max_characters = 255

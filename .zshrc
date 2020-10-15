@@ -7,7 +7,7 @@
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="agnoster"
+ZSH_THEME="nebirhos"
 
 # Set list of themes to load
 # Setting this variable when ZSH_THEME=random
@@ -95,7 +95,8 @@ source $ZSH/oh-my-zsh.sh
 #alias yuview="export QT_AUTO_SCREEN_SCALE_FACTOR=0 && export QT_SCREEN_SCALE_FACTORS=0.5 && ~/Software/YUView/build/release/YUView &"
 alias yuview="~/Software/YUView/build/release/YUView &"
 alias matlab="~/Software/Matlab2019a/bin/matlab &"
-alias rdplot="PYTHONPATH=~/Software/RDPlot/src/ python3.7 ~/Software/RDPlot/src/rdplot/__main__.py"
+alias rdplot="PYTHONPATH=~/Software/RDPlot/src/ python3.8 ~/Software/RDPlot/src/rdplot/__main__.py"
+alias code="code --disable-gpu"
 alias gitdotfiles='/usr/bin/git --git-dir=$HOME/dotfiles/ --work-tree=$HOME' 
 
 xmodmap -e "keycode 44 = j J Left Left Left dead_horn dead_hook"
@@ -108,3 +109,11 @@ xmodmap -e "keycode 30 = u U Home Home Home"
 xmodmap -e "keycode 32 = o O End End End"
 xmodmap -e "keycode 43 = h H Delete Delete Delete"
 xmodmap -e "keycode 66 = Mode_switch"
+
+PATH="/home/urbi/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="/home/urbi/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="/home/urbi/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"/home/urbi/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=/home/urbi/perl5"; export PERL_MM_OPT;
+
+LIBVA_DRIVER_NAME=iHD; export LIBVA_DRIVER_NAME;
