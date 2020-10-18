@@ -1,0 +1,3 @@
+rofi.theme: /usr/share/rofi/themes/purple.rasi
+rofi.ssh-command: {terminal} -e "{ssh-client} {host}"
+rofi.parse-known-hosts: false
