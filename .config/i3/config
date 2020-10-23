@@ -110,6 +110,8 @@ set $workspace4 "4 "
 set $workspace5 "5 "
 set $workspace6 "6 "
 set $workspace7 "7 "
+set $workspace8 "8"
+set $workspace9 "9"
 
 # switch to workspace
 bindsym $mod+0 workspace $workspace0
