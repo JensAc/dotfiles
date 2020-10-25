@@ -182,6 +182,7 @@ assign [class="Mattermost"] $workspace4
 assign [class="Slack"] $workspace4
 assign [class="TelegramDesktop"] $workspace4
 assign [class="zoom"] $workspace4
+assign [class="discord"] $workspace4
 assign [class="firefox"] $workspace2
 assign [class="Thunderbird"] $workspace3
 assign [class="MATLAB R2019b - academic use"] $workspace5
