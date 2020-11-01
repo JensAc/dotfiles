@@ -185,12 +185,12 @@
 
 ;; Org Mode Configuration ------------------------------------------------------
 
-(defun efs/org-mode-setup ()
+(defun acemacs/org-mode-setup ()
   (org-indent-mode)
   (variable-pitch-mode 1)
   (visual-line-mode 1))
 
-(defun efs/org-font-setup ()
+(defun acemacs/org-font-setup ()
   ;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
                           '(("^ *\\([-]\\) "
@@ -217,7 +217,7 @@
   (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
 
 (use-package org
-  :hook (org-mode . efs/org-mode-setup)
+  :hook (org-mode . acemacs/org-mode-setup)
   :ensure t
   :config
   (setq org-ellipsis " ▾")
@@ -250,7 +250,7 @@
        ("planning" . ?p)
        ("note" . ?n)
        ("idea" . ?i)))
-  (efs/org-font-setup))
+  (acemacs/org-font-setup))
 
 (use-package org-bullets
   :after org
@@ -261,13 +261,13 @@
 
 
 ;; lsp-mode 
-(defun efs/lsp-mode-setup ()
+(defun acemacs/lsp-mode-setup ()
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
   (lsp-headerline-breadcrumb-mode))
 
 (use-package lsp-mode
   :commands (lsp lsp-deferred)
-  :hook (lsp-mode . efs/lsp-mode-setup)
+  :hook (lsp-mode . acemacs/lsp-mode-setup)
   :init
   (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
   :config
@@ -280,6 +280,13 @@
 
 (use-package lsp-treemacs
   :after lsp)
+
+;; dap mode for debuggin
+(use-package dap-mode
+  :custom
+  (dap-ui-controls-mode nil)
+  :bind
+  ("<f5>" . dap-hydra))
 
 ;; company mode for completion
 (use-package company
@@ -308,12 +315,14 @@
   :hook
   (elpy-mode . (lambda ()
                           (require 'lsp-python-ms)
+                          (require 'dap-python)
                           (lsp-deferred)))
   :init
   (elpy-enable))
 
+
 ;; realgud
-(use-package realgud)
+;;(use-package realgud)
 
 ;;latex
 (use-package lsp-latex)
@@ -328,3 +337,19 @@
   (TeX-source-correlate-mode)
   :custom
   (TeX-source-correlate-start-server t))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(dap-python dap-mode which-key use-package smex realgud rainbow-delimiters org-bullets lsp-ui lsp-treemacs lsp-python-ms lsp-latex ivy-rich helpful forge evil-magit evil-collection elpy doom-themes doom-modeline counsel-projectile company-box company-auctex))
+ '(safe-local-variable-values
+   '((TeX-command-extra-options . "-shell-escape -main-memory=90000000")
+     (reftex-default-bibliography "../references.bib"))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
