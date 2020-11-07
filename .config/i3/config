@@ -195,7 +195,7 @@ assign [class="QtCreator"] $workspace7
 
 
 # Locking script shortcut
-bindsym Control+Shift+l exec "i3lock"
+bindsym Control+Shift+l exec "pkill -SIGHUP gpg-agent && i3lock"
 
 
 # launch some application at startup
@@ -206,6 +206,7 @@ exec --no-startup-id "slack --disable-gpu "
 exec --no-startup-id "telegram-desktop"
 exec --no-startup-id "nextcloud"
 exec --no-startup-id "nm-applet"
+exec --no-startup-id "dunst"
 
 # set figures in floating mode
 for_window [title="Figure*"] floating enable
