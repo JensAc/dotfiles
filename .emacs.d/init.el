@@ -125,10 +125,12 @@
   (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
   (setq evil-want-C-i-jump nil)
-  (setq evil-want-fine-undo 'fine)
+  (setq evil-want-fine-undo t)
+  :custom
+  (evil-undo-system 'undo-redo)
   :config
   (evil-mode 1)
-
+  
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal)
 
@@ -164,6 +166,17 @@
   :config
   (setq auth-sources '(password-store)))
 
+;; mu4e configuration so far only posteo account
+(setq user-mail-address "jens.schneider.ac@posteo.de"
+      smtpmail-smtp-user "jens.schneider.ac@posteo.de"
+      smtpmail-default-smtp-server "posteo.de"
+      smtpmail-smtp-server "posteo.de"
+      message-send-mail-function 'smtpmail-send-it
+      smtpmail-smtp-service 587)
+
+(require 'mu4e)
+(setq mu4e-change-filenames-when-moving t)
+
 ;; Magit Configuration ---------------------------------------------------------
 
 (use-package magit
@@ -173,14 +186,10 @@
 (use-package evil-magit
   :after magit)
 
-;; NOTE: Make sure to configure a GitHub token before using this package!
-;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
-;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
-;; uncomment when ready 
+;; work with gitlab forges
 (use-package forge
   :config
   (add-to-list 'forge-alist '("git.rwth-aachen.de" "git.rwth-aachen.de/api/v4" "git.rwth-aachen.de" forge-gitlab-repository)))
-
 
 
 ;; Org Mode Configuration ------------------------------------------------------
@@ -258,12 +267,14 @@
   :custom
   (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
-
+;; lsp-mode configuration --------------------------------------
 
 ;; lsp-mode 
 (defun acemacs/lsp-mode-setup ()
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-  (lsp-headerline-breadcrumb-mode))
+  (lsp-headerline-breadcrumb-mode)
+  (setq gc-cons-threshold 100000000)
+  (setq read-process-output-max (* 1024 1024)))
 
 (use-package lsp-mode
   :commands (lsp lsp-deferred)
@@ -303,7 +314,10 @@
 (use-package company-box
   :hook (company-mode . company-box-mode))
 
+
+;; snippets and advanced syntax checking
 (use-package yasnippet)
+(use-package flycheck)
 
 ;; python
 (use-package lsp-python-ms
@@ -321,8 +335,9 @@
   (elpy-enable))
 
 
-;; realgud
-;;(use-package realgud)
+;; ein for interacting with notebooks
+(use-package ein)
+
 
 ;;latex
 (use-package lsp-latex)
@@ -343,10 +358,12 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(csv-mode dap-python dap-mode which-key use-package smex realgud rainbow-delimiters org-bullets lsp-ui lsp-treemacs lsp-python-ms lsp-latex ivy-rich helpful forge evil-magit evil-collection elpy doom-themes doom-modeline counsel-projectile company-box company-auctex))
+   '(mu4e esup ein flycheck command-log-mode csv-mode dap-python dap-mode which-key use-package smex realgud rainbow-delimiters org-bullets lsp-ui lsp-treemacs lsp-python-ms lsp-latex ivy-rich helpful forge evil-magit evil-collection elpy doom-themes doom-modeline counsel-projectile company-box company-auctex))
  '(safe-local-variable-values
    '((TeX-command-extra-options . "-shell-escape -main-memory=90000000")
-     (reftex-default-bibliography "../references.bib"))))
+     (reftex-default-bibliography "../references.bib")))
+ '(smtpmail-smtp-server "posteo.de")
+ '(smtpmail-smtp-service 25))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
