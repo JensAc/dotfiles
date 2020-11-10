@@ -23,6 +23,7 @@
                 term-mode-hook
 		treemacs-mode-hook
                 shell-mode-hook
+		mu4e-headers-mode-hook
                 eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
@@ -167,14 +168,31 @@
   (setq auth-sources '(password-store)))
 
 ;; mu4e configuration so far only posteo account
-(setq user-mail-address "jens.schneider.ac@posteo.de"
-      smtpmail-smtp-user "jens.schneider.ac@posteo.de"
-      smtpmail-default-smtp-server "posteo.de"
-      smtpmail-smtp-server "posteo.de"
-      message-send-mail-function 'smtpmail-send-it
-      smtpmail-smtp-service 587)
-
 (require 'mu4e)
+(setq message-send-mail-function 'smtpmail-send-it
+      user-full-name "Jens Schneider" )
+(setq mu4e-contexts
+    `( ,(make-mu4e-context
+	  :name "Posteo"
+	  :enter-func (lambda () (mu4e-message "Entering Posteo context"))
+          :leave-func (lambda () (mu4e-message "Leaving Posteo context"))
+	  ;; we match based on the contact-fields of the message
+	  :match-func (lambda (msg)
+			(when msg
+			  (mu4e-message-contact-field-matches msg
+			    :to "jens.schneider.ac@posteo.de")))
+	  :vars '( ( user-mail-address	   . "jens.schneider.ac@posteo.de"  )
+		   ( mu4e-sent-folder      . "/posteo/Sent" )
+		   ( mu4e-trash-folder     . "/posteo/Trash" )
+		   ( mu4e-drafts-folder    . "/posteo/Drafts" )
+ 		   ( smtpmail-smtp-user    . "jens.schneider.ac@posteo.de" )
+                   ( smtpmail-smtp-server  . "posteo.de")
+                   ( smtpmail-smtp-service . 587)
+		   (mu4e-maildir-shortcuts . ( ("/posteo/Inbox" . ?i)
+					       ("/posteo/Sent"  . ?s)
+					       ("/posteo/Trash" . ?t)
+					       ("/posteo/Dafts" . ?d) ) )
+		   ))))
 (setq mu4e-change-filenames-when-moving t)
 
 ;; Magit Configuration ---------------------------------------------------------
