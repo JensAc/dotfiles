@@ -121,6 +121,11 @@
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
+;; make org-mode easily accessible
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c c") 'org-capture)
+
+;; evil config
 (use-package evil
   :init
   (setq evil-want-integration t)
@@ -195,6 +200,12 @@
 		   ))))
 (setq mu4e-change-filenames-when-moving t)
 
+;;store org-mode links to messages
+(require 'org-mu4e)
+;;store link to message if in header view, not to header query
+(setq org-mu4e-link-query-in-headers-mode nil)
+
+
 ;; Magit Configuration ---------------------------------------------------------
 
 (use-package magit
@@ -266,6 +277,10 @@
 
   ;; Save Org buffers after refiling!
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
+
+  (setq org-capture-templates
+	'(("t" "todo" entry (file+headline "~/org/todo.org" "Tasks")
+           "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0            d\"))\n%a\n")))
 
   (setq org-tag-alist
     '((:startgroup)
@@ -376,7 +391,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(mu4e esup ein flycheck command-log-mode csv-mode dap-python dap-mode which-key use-package smex realgud rainbow-delimiters org-bullets lsp-ui lsp-treemacs lsp-python-ms lsp-latex ivy-rich helpful forge evil-magit evil-collection elpy doom-themes doom-modeline counsel-projectile company-box company-auctex))
+   '(org-mu4e mu4 lua-mode mu4e esup ein flycheck command-log-mode csv-mode dap-python dap-mode which-key use-package smex realgud rainbow-delimiters org-bullets lsp-ui lsp-treemacs lsp-python-ms lsp-latex ivy-rich helpful forge evil-magit evil-collection elpy doom-themes doom-modeline counsel-projectile company-box company-auctex))
  '(safe-local-variable-values
    '((TeX-command-extra-options . "-shell-escape -main-memory=90000000")
      (reftex-default-bibliography "../references.bib")))
