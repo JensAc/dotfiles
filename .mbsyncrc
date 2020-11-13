@@ -1,0 +1,22 @@
+IMAPAccount posteo
+Host posteo.de
+User jens.schneider.ac@posteo.de
+PassCmd "pass mail/posteo.de | head -n1" 
+SSLType IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore posteo-remote
+Account posteo
+
+MaildirStore posteo-local
+Subfolders Verbatim
+Path ~/email/posteo/
+Inbox ~/email/posteo/Inbox
+
+Channel posteo
+Master :posteo-remote:
+Slave :posteo-local:
+Patterns *
+Create Both
+SyncState *
+
