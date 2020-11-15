@@ -207,6 +207,7 @@ exec --no-startup-id "telegram-desktop"
 exec --no-startup-id "nextcloud"
 exec --no-startup-id "nm-applet"
 exec --no-startup-id "dunst"
+exec --no-startup-id "davmail -notray"
 
 # set figures in floating mode
 for_window [title="Figure*"] floating enable
