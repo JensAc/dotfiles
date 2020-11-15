@@ -20,3 +20,48 @@ Patterns *
 Create Both
 SyncState *
 
+IMAPAccount ient
+Host mail.rwth-aachen.de
+User js199426@ient.rwth-aachen.de
+PassCmd "pass mail/js199426@ient.rwth-aachen.de@mail.rwth-aachen.de | head -n1" 
+SSLType IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+PipelineDepth 1
+
+IMAPStore ient-remote
+Account ient
+
+MaildirStore ient-local
+Subfolders Verbatim
+Path ~/email/ient/
+Inbox ~/email/ient/Inbox
+
+Channel ient
+Master :ient-remote:
+Slave :ient-local:
+Patterns *
+Create Both
+SyncState *
+
+IMAPAccount rwth
+Host mail.rwth-aachen.de
+User js199426@rwth-aachen.de
+PassCmd "pass mail/js199426@rwth-aachen.de@mail.rwth-aachen.de | head -n1" 
+SSLType IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+PipelineDepth 1
+
+IMAPStore rwth-remote
+Account rwth
+
+MaildirStore rwth-local
+Subfolders Verbatim
+Path ~/email/rwth/
+Inbox ~/email/rwth/Inbox
+
+Channel rwth
+Master :rwth-remote:
+Slave :rwth-local:
+Patterns *
+Create Both
+SyncState *
