@@ -1,0 +1,26 @@
+[calendars]
+
+  [[ient]]
+    path = ~/calendars/ient/calendar
+    color = dark blue
+
+  [[institut]]
+    path = ~/calendars/institut/calendar
+    color = dark green
+    readonly = True
+
+[default]
+timedelta = 5d
+highlight_event_days = true
+
+[view]
+dynamic_days = false
+
+[locale]
+local_timezone= Europe/Berlin
+default_timezone= Europe/Berlin
+timeformat= %H:%M
+dateformat= %d.%m.
+longdateformat= %d.%m.%Y
+datetimeformat= %d.%m. %H:%M
+longdatetimeformat= %d.%m.%Y %H:%M
