@@ -309,8 +309,12 @@
   (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
   (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
 
+(defun acemacs/agenda-hook ()
+  (shell-command "bash -c 'notify-send -t 60000 -u low \"$(khal list --format \"{start-time} : {title}\" today today)\"'"))
 (use-package org
-  :hook (org-mode . acemacs/org-mode-setup)
+  :hook
+  (org-mode . acemacs/org-mode-setup)
+  (org-agenda-mode . acemacs/agenda-hook)
   :ensure t
   :config
   (setq org-ellipsis " ▾")
