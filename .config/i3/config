@@ -105,11 +105,11 @@ bindsym $mod+a focus parent
 set $workspace0 "0"
 set $workspace1 "1 "
 set $workspace2 "2 "
-set $workspace3 "3 "
+set $workspace3 "3 " 
 set $workspace4 "4 "
-set $workspace5 "5 "
+set $workspace5 "5 "
 set $workspace6 "6 "
-set $workspace7 "7 "
+set $workspace7 "7 "
 set $workspace8 "8"
 set $workspace9 "9"
 
@@ -174,6 +174,7 @@ bindsym $mod+r mode "resize"
 # finds out, if available)
 bar {
         status_command i3status
+	font pango:DejaVu Sans Mono , file-icons 10
 }
 
 
@@ -190,7 +191,7 @@ assign [class="lyx"] $workspace6
 assign [class="TeXstudio"] $workspace6
 assign [class="code-oss"] $workspace6
 assign [class="libreoffice-writer"] $workspace6
-assign [class="emacs"] $workspace6
+assign [class="Emacs"] $workspace3
 assign [class="QtCreator"] $workspace7
 
 
@@ -200,7 +201,7 @@ bindsym Control+Shift+l exec "pkill -SIGHUP gpg-agent && i3lock"
 
 # launch some application at startup
 exec --no-startup-id "pasystray"
-exec --no-startup-id "thunderbird"
+#exec --no-startup-id "thunderbird"
 exec --no-startup-id "mattermost-desktop --disable-gpu "
 exec --no-startup-id "slack --disable-gpu "
 exec --no-startup-id "telegram-desktop"
