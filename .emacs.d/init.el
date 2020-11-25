@@ -56,6 +56,8 @@
 
 (require 'use-package)
 (setq use-package-always-ensure t)
+;; debug load time of packages
+;;(setq use-package-compute-statistics t)
 
 (column-number-mode)
 (global-display-line-numbers-mode t)
@@ -76,12 +78,15 @@
 
 (use-package all-the-icons)
 
-(use-package doom-modeline
-  :init (doom-modeline-mode 1)
-  :custom ((doom-modeline-height 15)))
+;;(use-package doom-modeline
+;;  :init (doom-modeline-mode 1)
+;;  :custom ((doom-modeline-height 15)))
 
-(use-package doom-themes
-  :init (load-theme 'doom-dracula t))
+;;(use-package doom-themes
+;;  :init (load-theme 'doom-dracula t))
+
+;; lets try the modus-vivendi theme, it should load faster than doom-themes
+(load-theme 'modus-vivendi t)
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
@@ -143,10 +148,10 @@
   ;; some keybindings for evil. Note that arrow keys are easily accessible on the UHK
   (evil-global-set-key 'motion (kbd "<down>") 'evil-next-visual-line)
   (evil-global-set-key 'motion (kbd "<up>") 'evil-previous-visual-line)
-  (evil-global-set-key 'normal (kbd "C-w <down>") 'evil-window-down) 
-  (evil-global-set-key 'normal (kbd "C-w <up>") 'evil-window-up) 
-  (evil-global-set-key 'normal (kbd "C-w <left>") 'evil-window-left) 
-  (evil-global-set-key 'normal (kbd "C-w <right>") 'evil-window-right)) 
+  (evil-global-set-key 'normal (kbd "C-w <down>") 'evil-window-down)
+  (evil-global-set-key 'normal (kbd "C-w <up>") 'evil-window-up)
+  (evil-global-set-key 'normal (kbd "C-w <left>") 'evil-window-left)
+  (evil-global-set-key 'normal (kbd "C-w <right>") 'evil-window-right))
 		    
 (use-package evil-collection
   :after evil
@@ -162,9 +167,15 @@
   :diminish projectile-mode
   :config (projectile-mode)
   :custom ((projectile-completion-system 'ivy))
-)
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :init
+  (when (file-directory-p "~/Software")
+    (setq projectile-project-search-path '("~/Software")))
+  (setq projectile-switch-project-action #'projectile-dired))
 
 (use-package counsel-projectile
+  :after projectile
   :config (counsel-projectile-mode))
 
 ;; set pass as standard authentication method
@@ -264,14 +275,17 @@
 ;; Magit Configuration ---------------------------------------------------------
 
 (use-package magit
+  :defer t
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
 (use-package evil-magit
+  :defer t
   :after magit)
 
 ;; work with gitlab forges
 (use-package forge
+  :defer t
   :config
   (add-to-list 'forge-alist '("git.rwth-aachen.de" "git.rwth-aachen.de/api/v4" "git.rwth-aachen.de" forge-gitlab-repository)))
 
@@ -361,7 +375,7 @@
 
 ;; lsp-mode configuration --------------------------------------
 
-;; lsp-mode 
+;; lsp-mode
 (defun acemacs/lsp-mode-setup ()
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
   (lsp-headerline-breadcrumb-mode)
@@ -410,31 +424,36 @@
 
 ;; snippets and advanced syntax checking
 (use-package yasnippet)
-(use-package flycheck)
+(use-package flycheck
+  :init (global-flycheck-mode))
 
 ;; python
 (use-package lsp-python-ms
-  :ensure t
+  :defer t
   :init (setq lsp-python-ms-auto-install-server t))
 
 (use-package elpy
-  :ensure t
+  :defer t
   :hook
   (elpy-mode . (lambda ()
                           (require 'lsp-python-ms)
                           (require 'dap-python)
                           (lsp-deferred)))
   :init
-  (elpy-enable))
+  (advice-add 'python-mode :before 'elpy-enable))
 
 
 ;; ein for interacting with notebooks
-(use-package ein)
+(use-package ein
+  :defer t)
 
 
 ;;latex
-(use-package lsp-latex)
+(use-package lsp-latex
+  :defer t)
+
 (use-package tex
+  :defer t
   :ensure auctex
   :hook
   (LaTeX-mode . (lambda ()
