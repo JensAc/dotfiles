@@ -82,11 +82,8 @@
 ;;  :init (doom-modeline-mode 1)
 ;;  :custom ((doom-modeline-height 15)))
 
-;;(use-package doom-themes
-;;  :init (load-theme 'doom-dracula t))
-
-;; lets try the modus-vivendi theme, it should load faster than doom-themes
-(load-theme 'modus-vivendi t)
+(use-package doom-themes
+  :init (load-theme 'doom-dracula t))
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
@@ -98,6 +95,7 @@
   (setq which-key-idle-delay 1))
 
 (use-package ivy-rich
+  :after ivy
   :init
   (ivy-rich-mode 1))
 
@@ -108,6 +106,7 @@
   :bind (("M-x" . counsel-M-x)
          ("C-x b" . counsel-switch-buffer)
          ("C-x C-f" . counsel-find-file)
+         ("C-x C-r" . counsel-recentf)
          :map minibuffer-local-map
          ("C-r" . 'counsel-minibuffer-history)))
 
@@ -184,92 +183,99 @@
   (setq auth-sources '(password-store)))
 
 ;; mu4e configuration so far only posteo account
-(require 'mu4e)
-(setq message-send-mail-function 'smtpmail-send-it
-      user-full-name "Jens Schneider" )
-(setq mu4e-contexts
-    `( ,(make-mu4e-context
-	  :name "Posteo"
-	  :enter-func (lambda () (mu4e-message "Entering Posteo context"))
-          :leave-func (lambda () (mu4e-message "Leaving Posteo context"))
-	  ;; we match based on the contact-fields of the message
-	  :match-func (lambda (msg)
-			(when msg
-			  (mu4e-message-contact-field-matches msg
-			    :to "jens.schneider.ac@posteo.de")))
-	  :vars '( ( user-mail-address	   . "jens.schneider.ac@posteo.de"  )
-		   ( mu4e-sent-folder      . "/posteo/Sent" )
-		   ( mu4e-trash-folder     . "/posteo/Trash" )
-		   ( mu4e-drafts-folder    . "/posteo/Drafts" )
-		   ( mu4e-refile-folder    . "/posteo/Archive" )
- 		   ( smtpmail-smtp-user    . "jens.schneider.ac@posteo.de" )
-                   ( smtpmail-smtp-server  . "posteo.de")
-                   ( smtpmail-smtp-service . 587)
-		   (mu4e-maildir-shortcuts . ( ("/posteo/Inbox"   . ?i)
-					       ("/posteo/Sent"    . ?s)
-					       ("/posteo/Archive" . ?a)
-					       ("/posteo/Trash"   . ?t)
-					       ("/posteo/Dafts"   . ?d) ))))
-       ,(make-mu4e-context
-	  :name "Rwth"
-	  :enter-func (lambda () (mu4e-message "Entering Rwth context"))
-          :leave-func (lambda () (mu4e-message "Leaving Rwth context"))
-	  ;; we match based on the contact-fields of the message
-	  :match-func (lambda (msg)
-			(when msg
-			  (mu4e-message-contact-field-matches msg
-			    :to "jens.schneider1@rwth-aachen.de")))
-	  :vars '( ( user-mail-address	   . "jens.schneider1@rwth-aachen.de"  )
-		   ( mu4e-sent-folder      . "/rwth/Sent Items" )
-		   ( mu4e-trash-folder     . "/rwth/Deleted Items" )
-		   ( mu4e-drafts-folder    . "/rwth/Drafts" )
-		   ( mu4e-refile-folder    . "/rwth/Archive" )
- 		   ( smtpmail-smtp-user    . "js199426@rwth-aachen.de" )
-                   ( smtpmail-smtp-server  . "mail.rwth-aachen.de")
-                   ( smtpmail-smtp-service . 587)
-		   (mu4e-maildir-shortcuts . ( ("/rwth/Inbox"         . ?i)
-					       ("/rwth/Sent Items"    . ?s)
-					       ("/rwth/Archive"       . ?a)
-					       ("/rwth/Deleted Items" . ?t)
-					       ("/rwth/Dafts"         . ?d) ))))
-       ,(make-mu4e-context
-	  :name "Ient"
-	  :enter-func (lambda () (mu4e-message "Entering Ient context"))
-          :leave-func (lambda () (mu4e-message "Leaving Ient context"))
-	  ;; we match based on the contact-fields of the message
-	  :match-func (lambda (msg)
-			(when msg
-			  (mu4e-message-contact-field-matches msg
-			    :to "schneider@ient.rwth-aachen.de")))
-	  :vars '( ( user-mail-address	   . "schneider@ient.rwth-aachen.de"  )
-		   ( mu4e-sent-folder      . "/ient/Sent Items" )
-		   ( mu4e-trash-folder     . "/ient/Deleted Items" )
-		   ( mu4e-drafts-folder    . "/ient/Drafts" )
-		   ( mu4e-refile-folder    . "/ient/Archive" )
- 		   ( smtpmail-smtp-user    . "js199426@ient.rwth-aachen.de" )
-                   ( smtpmail-smtp-server  . "mail.rwth-aachen.de")
-                   ( smtpmail-smtp-service . 587)
-		   (mu4e-maildir-shortcuts . ( ("/ient/Inbox"         . ?i)
-					       ("/ient/Sent Items"    . ?s)
-					       ("/ient/Archive"       . ?a)
-					       ("/ient/Deleted Items" . ?t)
-					       ("/ient/Dafts"         . ?d) ))))
-       ))
-;; work with mbsync
-(setq mu4e-get-mail-command "mbsync -a")
-(setq mu4e-change-filenames-when-moving t)
-
-;; don't keep message buffers around
-(setq message-kill-buffer-on-exit t)
-
-; don't show related messages and threads by default. Toggle them with z r and z t
-(setq mu4e-headers-include-related nil)
-(setq mu4e-headers-show-threads nil)
+(use-package mu4e
+  :commands mu4e
+  :defer t
+  :ensure nil
+  :config
+  (setq message-send-mail-function 'smtpmail-send-it)
+  (setq	user-full-name "Jens Schneider" )
+  (setq mu4e-contexts
+	`( ,(make-mu4e-context
+	     :name "Posteo"
+	     :enter-func (lambda () (mu4e-message "Entering Posteo context"))
+             :leave-func (lambda () (mu4e-message "Leaving Posteo context"))
+	     ;; we match based on the contact-fields of the message
+	     :match-func (lambda (msg)
+			   (when msg
+			     (mu4e-message-contact-field-matches msg
+								 :to "jens.schneider.ac@posteo.de")))
+	     :vars '( ( user-mail-address	   . "jens.schneider.ac@posteo.de"  )
+		      ( mu4e-sent-folder      . "/posteo/Sent" )
+		      ( mu4e-trash-folder     . "/posteo/Trash" )
+		      ( mu4e-drafts-folder    . "/posteo/Drafts" )
+		      ( mu4e-refile-folder    . "/posteo/Archive" )
+ 		      ( smtpmail-smtp-user    . "jens.schneider.ac@posteo.de" )
+                      ( smtpmail-smtp-server  . "posteo.de")
+                      ( smtpmail-smtp-service . 587)
+		      (mu4e-maildir-shortcuts . ( ("/posteo/Inbox"   . ?i)
+						  ("/posteo/Sent"    . ?s)
+						  ("/posteo/Archive" . ?a)
+						  ("/posteo/Trash"   . ?t)
+						  ("/posteo/Dafts"   . ?d) ))))
+	   ,(make-mu4e-context
+	     :name "Rwth"
+	     :enter-func (lambda () (mu4e-message "Entering Rwth context"))
+             :leave-func (lambda () (mu4e-message "Leaving Rwth context"))
+	     ;; we match based on the contact-fields of the message
+	     :match-func (lambda (msg)
+			   (when msg
+			     (mu4e-message-contact-field-matches msg
+								 :to "jens.schneider1@rwth-aachen.de")))
+	     :vars '( ( user-mail-address	   . "jens.schneider1@rwth-aachen.de"  )
+		      ( mu4e-sent-folder      . "/rwth/Sent Items" )
+		      ( mu4e-trash-folder     . "/rwth/Deleted Items" )
+		      ( mu4e-drafts-folder    . "/rwth/Drafts" )
+		      ( mu4e-refile-folder    . "/rwth/Archive" )
+ 		      ( smtpmail-smtp-user    . "js199426@rwth-aachen.de" )
+                      ( smtpmail-smtp-server  . "mail.rwth-aachen.de")
+                      ( smtpmail-smtp-service . 587)
+		      (mu4e-maildir-shortcuts . ( ("/rwth/Inbox"         . ?i)
+						  ("/rwth/Sent Items"    . ?s)
+						  ("/rwth/Archive"       . ?a)
+						  ("/rwth/Deleted Items" . ?t)
+						  ("/rwth/Dafts"         . ?d) ))))
+	   ,(make-mu4e-context
+	     :name "Ient"
+	     :enter-func (lambda () (mu4e-message "Entering Ient context"))
+             :leave-func (lambda () (mu4e-message "Leaving Ient context"))
+	     ;; we match based on the contact-fields of the message
+	     :match-func (lambda (msg)
+			   (when msg
+			     (mu4e-message-contact-field-matches msg
+								 :to "schneider@ient.rwth-aachen.de")))
+	     :vars '( ( user-mail-address	   . "schneider@ient.rwth-aachen.de"  )
+		      ( mu4e-sent-folder      . "/ient/Sent Items" )
+		      ( mu4e-trash-folder     . "/ient/Deleted Items" )
+		      ( mu4e-drafts-folder    . "/ient/Drafts" )
+		      ( mu4e-refile-folder    . "/ient/Archive" )
+ 		      ( smtpmail-smtp-user    . "js199426@ient.rwth-aachen.de" )
+                      ( smtpmail-smtp-server  . "mail.rwth-aachen.de")
+                      ( smtpmail-smtp-service . 587)
+		      (mu4e-maildir-shortcuts . ( ("/ient/Inbox"         . ?i)
+						  ("/ient/Sent Items"    . ?s)
+						  ("/ient/Archive"       . ?a)
+						  ("/ient/Deleted Items" . ?t)
+						  ("/ient/Dafts"         . ?d) ))))
+	   ))
+  ;; work with mbsync
+  (setq mu4e-get-mail-command "mbsync -a")
+  (setq mu4e-change-filenames-when-moving t)
+  
+  ;; don't keep message buffers around
+  (setq message-kill-buffer-on-exit t)
+  
+					; don't show related messages and threads by default. Toggle them with z r and z t
+  (setq mu4e-headers-include-related nil)
+  (setq mu4e-headers-show-threads nil))
 
 ;;store org-mode links to messages
-(require 'org-mu4e)
+(use-package org-mu4e
+  :ensure nil
+  :after mu4e
+  :config
 ;;store link to message if in header view, not to header query
-(setq org-mu4e-link-query-in-headers-mode nil)
+(setq org-mu4e-link-query-in-headers-mode nil))
 
 
 ;; Magit Configuration ---------------------------------------------------------
@@ -423,7 +429,11 @@
 
 
 ;; snippets and advanced syntax checking
-(use-package yasnippet)
+(use-package yasnippet
+  :defer t)
+(use-package yasnippet-snippets
+  :after yasnippet)
+
 (use-package flycheck
   :init (global-flycheck-mode))
 
@@ -442,11 +452,9 @@
   :init
   (advice-add 'python-mode :before 'elpy-enable))
 
-
 ;; ein for interacting with notebooks
 (use-package ein
   :defer t)
-
 
 ;;latex
 (use-package lsp-latex
