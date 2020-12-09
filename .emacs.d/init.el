@@ -4,7 +4,7 @@
 ;; Basic UI Configuration ------------------------------------------------------
 
 ;; You will most likely need to adjust this font size for your system!
-(defvar acemacs/default-font-size 100)
+(defvar acemacs/default-font-size 120)
 
 (setq inhibit-startup-message t)
 
@@ -29,13 +29,13 @@
 
 ;; Font Configuration ----------------------------------------------------------
 
-(set-face-attribute 'default nil :font "Fira Code Retina" :height acemacs/default-font-size)
+(set-face-attribute 'default nil :font "Iosevka" :height acemacs/default-font-size)
 
 ;; Set the fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height acemacs/default-font-size)
+(set-face-attribute 'fixed-pitch nil :font "Iosevka" :height acemacs/default-font-size)
 
 ;; Set the variable pitch face
-(set-face-attribute 'variable-pitch nil :font "Cantarell" :height acemacs/default-font-size :weight 'regular)
+(set-face-attribute 'variable-pitch nil :font "Iosevka Aile" :height acemacs/default-font-size :weight 'regular)
 
 ;; Package Manager Configuration -----------------------------------------------
 
@@ -318,7 +318,7 @@
                   (org-level-6 . 1.1)
                   (org-level-7 . 1.1)
                   (org-level-8 . 1.1)))
-    (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+    (set-face-attribute (car face) nil :font "Iosevka Aile" :weight 'regular :height (cdr face)))
 
   ;; Ensure that anything that should be fixed-pitch in Org files appears that way
   (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
@@ -379,6 +379,19 @@
   :custom
   (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
+(use-package org-roam
+      :hook
+      (after-init . org-roam-mode)
+      :custom
+      (org-roam-directory "~/org/notes")
+      :bind (:map org-roam-mode-map
+              (("C-c n l" . org-roam)
+               ("C-c n f" . org-roam-find-file)
+               ("C-c n g" . org-roam-graph))
+              :map org-mode-map
+              (("C-c n i" . org-roam-insert))
+              (("C-c n I" . org-roam-insert-immediate))))
+
 ;; lsp-mode configuration --------------------------------------
 
 ;; lsp-mode
@@ -438,15 +451,13 @@
   :init (global-flycheck-mode))
 
 ;; python
-(use-package lsp-python-ms
-  :defer t
-  :init (setq lsp-python-ms-auto-install-server t))
-
 (use-package elpy
   :defer t
+  :custom
+  (elpy-formatter "black")
+  (elpy-rpc-timeout 10)
   :hook
   (elpy-mode . (lambda ()
-                          (require 'lsp-python-ms)
                           (require 'dap-python)
                           (lsp-deferred)))
   :init
@@ -477,8 +488,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(mml-secure-smime-sign-with-sender t)
  '(package-selected-packages
-   '(org-mu4e mu4 lua-mode mu4e esup ein flycheck command-log-mode csv-mode dap-python dap-mode which-key use-package smex realgud rainbow-delimiters org-bullets lsp-ui lsp-treemacs lsp-python-ms lsp-latex ivy-rich helpful forge evil-magit evil-collection elpy doom-themes doom-modeline counsel-projectile company-box company-auctex))
+   '(org-roam org-mu4e mu4 lua-mode mu4e esup ein flycheck command-log-mode csv-mode dap-mode which-key use-package smex realgud rainbow-delimiters org-bullets lsp-ui lsp-treemacs lsp-latex ivy-rich helpful forge evil-magit evil-collection elpy doom-themes doom-modeline counsel-projectile company-box company-auctex))
  '(safe-local-variable-values
    '((TeX-command-extra-options . "-shell-escape -main-memory=90000000")
      (reftex-default-bibliography "../references.bib")))
