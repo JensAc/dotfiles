@@ -9,6 +9,7 @@
 ###############################################################################
 
 general {
+    output_format = i3bar
     interval = 1
     colors = true
     color_good = '#88b090'
@@ -16,11 +17,9 @@ general {
     color_bad = '#e89393'
 }
 
-order += "read_file keymap"
-order += "volume master"
+#order += "read_file keymap"
+#order += "volume master"
 order += "disk /"
-#order += "disk /data"
-#order += "disk /home"
 #order += "run_watch DHCP"
 #order += "ipv6"
 #order += "run_watch VPN"
@@ -81,11 +80,11 @@ run_watch VPN {
 }
 
 tztime local {
-    format = "%A %e %B  %Y  %H:%M"
+    format = " %A %e %B  %Y  %H:%M"
 }
 
 load {
-    format = "%1min"
+    format = " %1min"
 }
 
 cpu_usage {
@@ -103,14 +102,6 @@ disk "/" {
 	threshold_type = percentage_avail
 }
 
-disk "/data" {
-        format = "%avail"
-        prefix_type     = custom
-        low_threshold = 20
-        threshold_type = percentage_avail
-}
-
-
 volume master {
     format = "%volume  "
     format_muted = "  "
@@ -119,9 +110,9 @@ volume master {
     mixer_idx = 0
 }
 
-read_file keymap {
-    format = " %content"
-    format_bad =  "%title - %errno: %error"
-    path = "/home/urbi/.local/share/current_keymap.txt"
-    Max_characters = 255
-}
+#read_file keymap {
+#    format = " %content"
+#    format_bad =  "%title - %errno: %error"
+#    path = "/home/urbi/.local/share/current_keymap.txt"
+#    Max_characters = 255
+#}
