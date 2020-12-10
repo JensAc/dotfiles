@@ -236,9 +236,6 @@ bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightne
 exec feh --bg-tile ~/Pictures/Wallpapers/blackwhitenoise.jpg
 
 # os keymaps
-bindsym Ctrl+1 exec --no-startup-id setxkbmap -v 7 de | grep -Po "^layout.* \K(.*)" > ~/.local/share/current_keymap.txt
-bindsym Ctrl+2 exec --no-startup-id setxkbmap -v 7 us | grep -Po "^layout.* \K(.*)" > ~/.local/share/current_keymap.txt
-bindsym Ctrl+3 exec --no-startup-id setxkbmap -v 7 de neo | grep -Po "^layout.* \K(.*)" > ~/.local/share/current_keymap.txt
-# and set the keyboard layout to us after startup
-exec --no-startup-id setxkbmap -v 7 us | grep -Po "^layout.* \K(.*)" > ~/.local/share/current_keymap.txt
+bindsym Shift+space exec --no-startup-id (setxkbmap -query | grep -q "layout:\s\+de") && (setxkbmap us && notify-send -t 500 "us") || (setxkbmap de && notify-send -t 500 "de")
 
+ 
