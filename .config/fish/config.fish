@@ -39,3 +39,5 @@ set -x export QT_AUTO_SCREEN_SCALE_FACTOR 1
 if ping -c 1 -q host1 &> /dev/null
     set -Ux CUPS_SERVER "host1:631"
 end
+
+starship init fish | source
