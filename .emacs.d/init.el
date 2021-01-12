@@ -78,9 +78,9 @@
 
 (use-package all-the-icons)
 
-;;(use-package doom-modeline
-;;  :init (doom-modeline-mode 1)
-;;  :custom ((doom-modeline-height 15)))
+(use-package doom-modeline
+  :init (doom-modeline-mode 1)
+  :custom ((doom-modeline-height 15)))
 
 (use-package doom-themes
   :init (load-theme 'doom-dracula t))
@@ -331,6 +331,7 @@
 
 (defun acemacs/agenda-hook ()
   (shell-command "bash -c 'notify-send -t 60000 -u low \"$(khal list --format \"{start-time} : {title}\" today today)\"'"))
+
 (use-package org
   :hook
   (org-mode . acemacs/org-mode-setup)
@@ -342,7 +343,6 @@
   (setq org-agenda-start-with-log-mode t)
   (setq org-log-done 'time)
   (setq org-log-into-drawer t)
-
   (setq org-agenda-files
 	'("~/org/"))
 
@@ -379,18 +379,28 @@
   :custom
   (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
+(use-package org-tree-slide
+  :defer t)
+
 (use-package org-roam
       :hook
       (after-init . org-roam-mode)
       :custom
       (org-roam-directory "~/org/notes")
-      :bind (:map org-roam-mode-map
+      :bind
+      (:map org-roam-mode-map
               (("C-c n l" . org-roam)
                ("C-c n f" . org-roam-find-file)
                ("C-c n g" . org-roam-graph))
               :map org-mode-map
               (("C-c n i" . org-roam-insert))
               (("C-c n I" . org-roam-insert-immediate))))
+
+(use-package org-roam-protocol
+  :ensure nil
+  :after org-roam)
+
+(server-start)
 
 ;; lsp-mode configuration --------------------------------------
 
@@ -440,6 +450,11 @@
 (use-package company-box
   :hook (company-mode . company-box-mode))
 
+(use-package company-bibtex
+  :after company
+  :config
+  (setq company-bibtex-bibliography "/home/urbi/Documents/diss/references.bib")
+  (add-to-list 'company-backends 'company-bibtex))
 
 ;; snippets and advanced syntax checking
 (use-package yasnippet
@@ -482,7 +497,14 @@
   :config
   (TeX-source-correlate-mode)
   :custom
+  (TeX-command-extra-options "--shell-escape")
   (TeX-source-correlate-start-server t))
+
+;; not sure whether I really need that
+(use-package ivy-bibtex
+  :custom
+  (bibtex-completion-bibliography "~/Documents/diss/references.bib"))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -490,7 +512,7 @@
  ;; If there is more than one, they won't work right.
  '(mml-secure-smime-sign-with-sender t)
  '(package-selected-packages
-   '(org-roam org-mu4e mu4 lua-mode mu4e esup ein flycheck command-log-mode csv-mode dap-mode which-key use-package smex realgud rainbow-delimiters org-bullets lsp-ui lsp-treemacs lsp-latex ivy-rich helpful forge evil-magit evil-collection elpy doom-themes doom-modeline counsel-projectile company-box company-auctex))
+   '(company-bibtex format-all org-tree-slide org-tree-slides ivy-bibtex org-roam-protocol org-roam org-mu4e mu4 lua-mode mu4e esup ein flycheck command-log-mode csv-mode dap-mode which-key use-package smex realgud rainbow-delimiters org-bullets lsp-ui lsp-treemacs lsp-latex ivy-rich helpful forge evil-magit evil-collection elpy doom-themes doom-modeline counsel-projectile company-box company-auctex))
  '(safe-local-variable-values
    '((TeX-command-extra-options . "-shell-escape -main-memory=90000000")
      (reftex-default-bibliography "../references.bib")))
