@@ -9,6 +9,10 @@
     color = dark green
     readonly = True
 
+  [[ncpersonal]]
+    path = ~/calendars/nextcloud/personal
+    color = yellow
+    
 [default]
 timedelta = 5d
 highlight_event_days = true

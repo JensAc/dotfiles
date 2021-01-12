@@ -35,3 +35,22 @@ type = "caldav"
 url = "http://localhost:1080/users/institut@ient.rwth-aachen.de/calendar"
 username = "js199426@ient.rwth-aachen.de"
 password.fetch = ["command", "pass", "mail/js199426@ient.rwth-aachen.de@mail.rwth-aachen.de"]
+
+
+
+[pair nextcloud]
+a = "nextcloud_local"
+b = "nextcloud_remote"
+collections = ["from a", "from b"]
+metadata = ["color"]
+
+[storage nextcloud_local]
+type = "filesystem"
+path = "~/calendars/nextcloud"
+fileext = ".ics"
+
+[storage nextcloud_remote]
+type = "caldav"
+url = "https://nextcloud.saturnv.de/"
+username = "jens"
+password.fetch = ["command", "pass", "raspberrypi/private/nextcloud", "| head -n 1"]
