@@ -396,6 +396,21 @@
               (("C-c n i" . org-roam-insert))
               (("C-c n I" . org-roam-insert-immediate))))
 
+(use-package org-roam-server
+  :after org-roam
+  :config
+  (setq org-roam-server-host "127.0.0.1"
+        org-roam-server-port 8080
+        org-roam-server-authenticate nil
+        org-roam-server-export-inline-images t
+        org-roam-server-serve-files nil
+        org-roam-server-served-file-extensions '("pdf" "mp4" "ogv")
+        org-roam-server-network-poll t
+        org-roam-server-network-arrows nil
+        org-roam-server-network-label-truncate t
+        org-roam-server-network-label-truncate-length 60
+        org-roam-server-network-label-wrap-length 20))
+
 (use-package org-roam-protocol
   :ensure nil
   :after org-roam)
@@ -512,7 +527,7 @@
  ;; If there is more than one, they won't work right.
  '(mml-secure-smime-sign-with-sender t)
  '(package-selected-packages
-   '(company-bibtex format-all org-tree-slide org-tree-slides ivy-bibtex org-roam-protocol org-roam org-mu4e mu4 lua-mode mu4e esup ein flycheck command-log-mode csv-mode dap-mode which-key use-package smex realgud rainbow-delimiters org-bullets lsp-ui lsp-treemacs lsp-latex ivy-rich helpful forge evil-magit evil-collection elpy doom-themes doom-modeline counsel-projectile company-box company-auctex))
+   '(org-roam-server company-bibtex format-all org-tree-slide org-tree-slides ivy-bibtex org-roam-protocol org-roam org-mu4e mu4 lua-mode mu4e esup ein flycheck command-log-mode csv-mode dap-mode which-key use-package smex realgud rainbow-delimiters org-bullets lsp-ui lsp-treemacs lsp-latex ivy-rich helpful forge evil-magit evil-collection elpy doom-themes doom-modeline counsel-projectile company-box company-auctex))
  '(safe-local-variable-values
    '((TeX-command-extra-options . "-shell-escape -main-memory=90000000")
      (reftex-default-bibliography "../references.bib")))
