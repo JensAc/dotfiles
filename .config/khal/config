@@ -13,6 +13,10 @@
     path = ~/calendars/nextcloud/personal
     color = yellow
     
+  [[ncjj]]
+    path = ~/calendars/nextcloud/jj
+    color = light red
+
 [default]
 timedelta = 5d
 highlight_event_days = true
