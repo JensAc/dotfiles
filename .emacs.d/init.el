@@ -1,6 +1,16 @@
 ;; Many thanks to @daviwil (https://github.com/daviwil)
 ;; This config is mainly based on your streams and examples and is expected to evolve...
 
+;; define function for checking whether we're running on any im
+(defun acemacs/is-im ()
+    "Check whether we are on any im."
+    (if (string-match "im.*" (system-name)) t nil))
+
+(defun acemacs/is-orbi ()
+    "Check whether we are on orbi."
+    (if (string-match "orbi" (system-name)) t nil))
+
+
 ;; Basic UI Configuration ------------------------------------------------------
 
 ;; You will most likely need to adjust this font size for your system!
@@ -28,14 +38,18 @@
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 ;; Font Configuration ----------------------------------------------------------
+(defvar acemacs/font "Iosevka")
+(defvar acemacs/font-fixed-pitch "Iosevka Aile")
 
-(set-face-attribute 'default nil :font "Iosevka" :height acemacs/default-font-size)
+(if (acemacs/is-im) (setq acemacs/font "DejaVu Sans Mono" acemacs/font-fixed-pitch "DejaVu Sans"))
+
+(set-face-attribute 'default nil :font acemacs/font :height acemacs/default-font-size)
 
 ;; Set the fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "Iosevka" :height acemacs/default-font-size)
+(set-face-attribute 'fixed-pitch nil :font acemacs/font :height acemacs/default-font-size)
 
 ;; Set the variable pitch face
-(set-face-attribute 'variable-pitch nil :font "Iosevka Aile" :height acemacs/default-font-size :weight 'regular)
+(set-face-attribute 'variable-pitch nil :font acemacs/font-fixed-pitch :height acemacs/default-font-size :weight 'regular)
 
 ;; Package Manager Configuration -----------------------------------------------
 
@@ -57,10 +71,21 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 ;; debug load time of packages
-;;(setq use-package-compute-statistics t)
+(setq use-package-compute-statistics t)
 
 (column-number-mode)
 (global-display-line-numbers-mode t)
+
+
+;; this makes company box behaving weard... I don'nt want this for now
+;; (use-package tab-bar
+;;   :ensure nil
+;;   :init (tab-bar-mode t)
+;;   :config
+;;   (setq tab-bar-close-button-show nil
+;; 	tab-bar-new-button-show nil
+;; 	tab-bar-show nil
+;; 	tab-bar-new-tab-choice "*scratch*"))
 
 ;; Ivy Configuration -----------------------------------------------------------
 
@@ -83,7 +108,8 @@
   :custom ((doom-modeline-height 15)))
 
 (use-package doom-themes
-  :init (load-theme 'doom-dracula t))
+  :init
+  (if (acemacs/is-orbi) (load-theme 'doom-dracula t) (load-theme 'doom-solarized-light t)))
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
@@ -177,6 +203,32 @@
   :after projectile
   :config (counsel-projectile-mode))
 
+(use-package projectile-ripgrep
+  :after projectile)
+
+;; dired configuration
+(use-package dired
+  :ensure nil
+  :commands (dired dired-jump)
+  :bind (("C-x C-j" . dired-jump))
+  :custom ((dired-listing-switches "-agho --group-directories-first"))
+  :config
+  (evil-collection-define-key 'normal 'dired-mode-map
+    "h" 'dired-single-up-directory
+    "l" 'dired-single-buffer))
+
+(use-package dired-single)
+
+(use-package all-the-icons-dired
+  :hook (dired-mode . all-the-icons-dired-mode))
+
+(use-package dired-hide-dotfiles
+  :hook (dired-mode . dired-hide-dotfiles-mode)
+  :config
+  (evil-collection-define-key 'normal 'dired-mode-map
+    "H" 'dired-hide-dotfiles-mode))
+
+
 ;; set pass as standard authentication method
 (use-package auth-source-pass
   :config
@@ -184,6 +236,7 @@
 
 ;; mu4e configuration so far only posteo account
 (use-package mu4e
+  :if (acemacs/is-orbi)
   :commands mu4e
   :defer t
   :ensure nil
@@ -282,12 +335,10 @@
 
 (use-package magit
   :defer t
+  :hook
+  (magit-mode . visual-line-mode)
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
-
-(use-package evil-magit
-  :defer t
-  :after magit)
 
 ;; work with gitlab forges
 (use-package forge
@@ -333,6 +384,7 @@
   (shell-command "bash -c 'notify-send -t 60000 -u low \"$(khal list --format \"{start-time} : {title}\" today today)\"'"))
 
 (use-package org
+  :if (acemacs/is-orbi)
   :hook
   (org-mode . acemacs/org-mode-setup)
   (org-agenda-mode . acemacs/agenda-hook)
@@ -371,6 +423,11 @@
        ("planning" . ?p)
        ("note" . ?n)
        ("idea" . ?i)))
+
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (matlab . t)))
   (acemacs/org-font-setup))
 
 (use-package org-bullets
@@ -383,21 +440,22 @@
   :defer t)
 
 (use-package org-roam
-      :hook
-      (after-init . org-roam-mode)
-      :custom
-      (org-roam-directory "~/org/notes")
-      :bind
-      (:map org-roam-mode-map
-              (("C-c n l" . org-roam)
-               ("C-c n f" . org-roam-find-file)
-               ("C-c n g" . org-roam-graph))
-              :map org-mode-map
-              (("C-c n i" . org-roam-insert))
-              (("C-c n I" . org-roam-insert-immediate))))
+  :if (acemacs/is-orbi)
+  :hook
+  (after-init . org-roam-mode)
+  :custom
+  (org-roam-directory "~/org/notes")
+  :bind
+  (:map org-roam-mode-map
+          (("C-c n l" . org-roam)
+           ("C-c n f" . org-roam-find-file)
+           ("C-c n g" . org-roam-graph))
+          :map org-mode-map
+          (("C-c n i" . org-roam-insert))
+          (("C-c n I" . org-roam-insert-immediate))))
 
 (use-package org-roam-server
-  :after org-roam
+  :after org-roam-mode
   :config
   (setq org-roam-server-host "127.0.0.1"
         org-roam-server-port 8080
@@ -413,7 +471,7 @@
 
 (use-package org-roam-protocol
   :ensure nil
-  :after org-roam)
+  :after org-roam-mode)
 
 (server-start)
 
@@ -433,7 +491,7 @@
   (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
   :config
   (lsp-enable-which-key-integration t))
-
+  
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode)
   :custom
@@ -442,38 +500,52 @@
 (use-package lsp-treemacs
   :after lsp)
 
-;; dap mode for debuggin
+;; dap mode for debugging
 (use-package dap-mode
   :config
   (setq dap-ui-controls-mode nil)
   :bind
   ("<f5>" . dap-hydra))
 
+
 ;; company mode for completion
+;; append yasnippet support as described in the following link
+;; https://www.reddit.com/r/emacs/comments/3r9fic/best_practicestip_for_companymode_andor_yasnippet/
+(defvar company-mode/enable-yas t "Enable yasnippet for all backends.")
+(defun company-mode/backend-with-yas (backend)
+  (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+  backend
+  (append (if (consp backend) backend (list backend))
+          '(:with company-yasnippet))))
+
 (use-package company
-  :after lsp-mode
-  :hook (lsp-mode . company-mode)
+  :demand t
   :bind (:map company-active-map
          ("<tab>" . company-complete-selection)
          ("<down>" . company-select-next))
-        (:map lsp-mode-map
-         ("<tab>" . company-indent-or-complete-common))
   :custom
   (company-minimum-prefix-length 1)
-  (company-idle-delay 0.0))
-
-(use-package company-box
-  :hook (company-mode . company-box-mode))
+  (company-idle-delay 0.1)
+  :config
+  (global-company-mode)
+  (global-set-key (kbd "TAB") #'company-indent-or-complete-common))
 
 (use-package company-bibtex
+  :if (acemacs/is-orbi)
   :after company
   :config
   (setq company-bibtex-bibliography "/home/urbi/Documents/diss/references.bib")
   (add-to-list 'company-backends 'company-bibtex))
+  (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+
+;; (use-package company-box
+;;   :hook (company-mode . company-box-mode))
 
 ;; snippets and advanced syntax checking
 (use-package yasnippet
-  :defer t)
+  :config
+  (yas-global-mode))
+
 (use-package yasnippet-snippets
   :after yasnippet)
 
@@ -508,7 +580,7 @@
   (LaTeX-mode . (lambda ()
 		  (require 'lsp-latex)
 		  (lsp)
-		  (yas-minor-mode)))
+		  (flyspell-mode)))
   :config
   (TeX-source-correlate-mode)
   :custom
@@ -517,25 +589,17 @@
 
 ;; not sure whether I really need that
 (use-package ivy-bibtex
+  :if (acemacs/is-orbi)
+  :commands
+  (ivy-bibtex)
   :custom
   (bibtex-completion-bibliography "~/Documents/diss/references.bib"))
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(mml-secure-smime-sign-with-sender t)
- '(package-selected-packages
-   '(org-roam-server company-bibtex format-all org-tree-slide org-tree-slides ivy-bibtex org-roam-protocol org-roam org-mu4e mu4 lua-mode mu4e esup ein flycheck command-log-mode csv-mode dap-mode which-key use-package smex realgud rainbow-delimiters org-bullets lsp-ui lsp-treemacs lsp-latex ivy-rich helpful forge evil-magit evil-collection elpy doom-themes doom-modeline counsel-projectile company-box company-auctex))
- '(safe-local-variable-values
-   '((TeX-command-extra-options . "-shell-escape -main-memory=90000000")
-     (reftex-default-bibliography "../references.bib")))
- '(smtpmail-smtp-server "posteo.de")
- '(smtpmail-smtp-service 25))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+;; matlab
+(use-package matlab
+  :if (acemacs/is-orbi)
+  :defer t
+  :ensure matlab-mode
+  :config
+  (setq matlab-shell-command "/home/urbi/Software/Matlab2019a/bin/matlab"))
+  
