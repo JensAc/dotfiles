@@ -71,21 +71,10 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 ;; debug load time of packages
-(setq use-package-compute-statistics t)
+;;(setq use-package-compute-statistics t)
 
 (column-number-mode)
 (global-display-line-numbers-mode t)
-
-
-;; this makes company box behaving weard... I don'nt want this for now
-;; (use-package tab-bar
-;;   :ensure nil
-;;   :init (tab-bar-mode t)
-;;   :config
-;;   (setq tab-bar-close-button-show nil
-;; 	tab-bar-new-button-show nil
-;; 	tab-bar-show nil
-;; 	tab-bar-new-tab-choice "*scratch*"))
 
 ;; Ivy Configuration -----------------------------------------------------------
 
@@ -402,6 +391,8 @@
   (add-to-list 'org-modules 'org-habit)
   (setq org-habit-graph-column 60)
 
+  (require 'org-protocol)
+  
   (setq org-todo-keywords
     '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
       (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
@@ -424,6 +415,9 @@
        ("note" . ?n)
        ("idea" . ?i)))
 
+  (setq org-html-doctype "html5"
+	org-html-htmlize-output-type 'css)
+  
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((emacs-lisp . t)
@@ -435,6 +429,8 @@
   :hook (org-mode . org-bullets-mode)
   :custom
   (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+(use-package htmlize)
 
 (use-package org-tree-slide
   :defer t)
@@ -478,19 +474,16 @@
 ;; lsp-mode configuration --------------------------------------
 
 ;; lsp-mode
-(defun acemacs/lsp-mode-setup ()
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :init
+  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+  :config
+  (lsp-enable-which-key-integration t)
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
   (lsp-headerline-breadcrumb-mode)
   (setq gc-cons-threshold 100000000)
   (setq read-process-output-max (* 1024 1024)))
-
-(use-package lsp-mode
-  :commands (lsp lsp-deferred)
-  :hook (lsp-mode . acemacs/lsp-mode-setup)
-  :init
-  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
-  :config
-  (lsp-enable-which-key-integration t))
   
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode)
@@ -587,7 +580,7 @@
   (TeX-command-extra-options "--shell-escape")
   (TeX-source-correlate-start-server t))
 
-;; not sure whether I really need that
+;; ivy bibtex
 (use-package ivy-bibtex
   :if (acemacs/is-orbi)
   :commands
@@ -602,4 +595,3 @@
   :ensure matlab-mode
   :config
   (setq matlab-shell-command "/home/urbi/Software/Matlab2019a/bin/matlab"))
-  
