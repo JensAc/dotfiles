@@ -369,8 +369,16 @@
   (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
   (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
 
+;; show todays calendar events, when opening org agenda
 (defun acemacs/agenda-hook ()
   (shell-command "bash -c 'notify-send -t 60000 -u low \"$(khal list --format \"{start-time} : {title}\" today today)\"'"))
+
+;; helper function for org-publish. Show the date of a post on the blog sitemap
+(defun acemacs/site-format-entry (entry style project)
+    (format "[[file:%s][%s]] --- %s"
+	    entry
+	    (org-publish-find-title entry project)
+	    (format-time-string "%Y-%m-%d" (org-publish-find-date entry project))))
 
 (use-package org
   :if (acemacs/is-orbi)
@@ -394,8 +402,7 @@
   (require 'org-protocol)
   
   (setq org-todo-keywords
-    '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
-      (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
+    '((sequence "TODO(t)" "NEXT(n)" "REVIEW(v)" "WAIT(w)" "|" "DONE(d!)")))
 
   ;; Save Org buffers after refiling!
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
@@ -410,18 +417,46 @@
        (:endgroup)
        ("@home" . ?H)
        ("@work" . ?W)
-       ("agenda" . ?a)
-       ("planning" . ?p)
-       ("note" . ?n)
        ("idea" . ?i)))
 
   (setq org-html-doctype "html5"
 	org-html-htmlize-output-type 'css)
   
+  (setq org-publish-project-alist
+      '(("orgfiles_blog"
+         :base-directory "~/Documents/workspace/website/org"
+         :base-extension "org"
+         :publishing-directory "/ssh:labora:~/Dokumente/website/posts"
+         :publishing-function org-html-publish-to-html
+         :headline-levels 3
+         :section-numbers nil
+         :with-toc nil
+         :with-date t
+         :auto-sitemap t
+	 :sitemap-filename "blog.org"
+	 :sitemap-title "Blog"
+	 :sitemap-sort-files anti-chronologically
+	 :sitemap-format-entry acemacs/site-format-entry
+         :sitemap-file-entry-format "%d - %t"
+         :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"../org-style.css\" />
+                     <link rel=\"stylesheet\" type=\"text/css\" href=\"../custom_style.css\" />
+                     <link rel=\"stylesheet\" type=\"text/css\" href=\"../fonts/webfont-iosevka-5.0.1/iosevka.css\" />
+		     <link rel=\"stylesheet\" type=\"text/css\" href=\"../fonts/webfont-iosevka-aile-4.0.0/iosevka-aile.css\" />"
+	 :html-postamble nil)
+
+        ("images_blog"
+         :base-directory "~/Documents/workspace/website/org/img"
+         :base-extension "jpg\\|gif\\|png"
+         :publishing-directory "/ssh:labora:~/Dokumente/website/posts/img"
+         :publishing-function org-publish-attachment)
+
+        ("blog" :components ("orgfiles_blog" "images_blog" ))))
+
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((emacs-lisp . t)
      (matlab . t)))
+
   (acemacs/org-font-setup))
 
 (use-package org-bullets
