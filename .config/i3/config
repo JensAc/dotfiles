@@ -185,6 +185,7 @@ assign [class="Slack"] $workspace4
 assign [class="TelegramDesktop"] $workspace4
 assign [class="zoom"] $workspace4
 assign [class="discord"] $workspace4
+assign [class="Signal"] $workspace4
 assign [class="firefox"] $workspace2
 assign [class="Thunderbird"] $workspace3
 assign [class="MATLAB R2019b - academic use"] $workspace5
@@ -228,7 +229,7 @@ bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #i
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
 
-# Sreen brightness controls
+# Screen brightness controls
 bindsym XF86MonBrightnessUp exec xbacklight -inc 20 # increase screen brightness
 bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightness
 
