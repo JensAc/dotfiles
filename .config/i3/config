@@ -19,6 +19,17 @@ font pango:iosevka 11
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
 #font pango:DejaVu Sans Mono 8
 
+# dracula theme
+# taken from https://github.com/dracula/i3/tree/05ba49e6de572c037c0b9967d2dfc03186154fda
+# class                 border  bground text    indicator child_border
+client.focused          #6272A4 #6272A4 #F8F8F2 #6272A4   #6272A4
+client.focused_inactive #44475A #44475A #F8F8F2 #44475A   #44475A
+client.unfocused        #282A36 #282A36 #BFBFBF #282A36   #282A36
+client.urgent           #44475A #FF5555 #F8F8F2 #FF5555   #FF5555
+client.placeholder      #282A36 #282A36 #F8F8F2 #282A36   #282A36
+
+client.background       #F8F8F2
+
 # Before i3 v4.8, we used to recommend this one as the default:
 # font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 # The font above is very space-efficient, that is, it looks good, sharp and
@@ -170,9 +181,26 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
+# container properties
+for_window [class="^.*"] border pixel 4
+gaps inner 4
+smart_gaps on
+smart_borders on
+
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
+  colors {
+    background #282A36
+    statusline #F8F8F2
+    separator  #44475A
+
+    focused_workspace  #44475A #44475A #F8F8F2
+    active_workspace   #282A36 #44475A #F8F8F2
+    inactive_workspace #282A36 #282A36 #BFBFBF
+    urgent_workspace   #FF5555 #FF5555 #F8F8F2
+    binding_mode       #FF5555 #FF5555 #F8F8F2
+  }
         status_command ~/.config/i3/i3status_script.sh
 	font pango:iosevka , file-icons 11
 }
@@ -217,6 +245,10 @@ exec --no-startup-id "davmail -notray"
 # set figures in floating mode
 for_window [title="Figure*"] floating enable
 for_window [class="GDB-ImageWatch"] floating enable
+
+# set zoom breakout rooms and chat in floating mode
+for_window [title="Breakout Rooms.*"] floating enable
+for_window [title="Chat"] floating enable
 
 
 
