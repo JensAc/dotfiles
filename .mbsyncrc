@@ -14,8 +14,8 @@ Path ~/email/posteo/
 Inbox ~/email/posteo/Inbox
 
 Channel posteo
-Master :posteo-remote:
-Slave :posteo-local:
+Far :posteo-remote:
+Near :posteo-local:
 Patterns *
 Create Both
 SyncState *
@@ -37,8 +37,8 @@ Path ~/email/ient/
 Inbox ~/email/ient/Inbox
 
 Channel ient
-Master :ient-remote:
-Slave :ient-local:
+Far :ient-remote:
+Near :ient-local:
 Patterns *
 Create Both
 SyncState *
@@ -60,8 +60,8 @@ Path ~/email/rwth/
 Inbox ~/email/rwth/Inbox
 
 Channel rwth
-Master :rwth-remote:
-Slave :rwth-local:
+Far :rwth-remote:
+Near :rwth-local:
 Patterns *
 Create Both
 SyncState *
