@@ -443,39 +443,38 @@
 #+end_src
 * Org roam
 #+begin_src emacs-lisp
-  (use-package org-roam
-    :if (acemacs/is-orbi)
-    :hook
-    (after-init . org-roam-mode)
-    :custom
-    (org-roam-directory "~/org/notes")
-    :bind
-    (:map org-roam-mode-map
-            (("C-c n l" . org-roam)
-             ("C-c n f" . org-roam-find-file)
-             ("C-c n g" . org-roam-graph))
-            :map org-mode-map
-            (("C-c n i" . org-roam-insert))
-            (("C-c n I" . org-roam-insert-immediate))))
+    (use-package org-roam
+      :if (acemacs/is-orbi)
+      :hook
+      (after-init . org-roam-mode)
+      :config
+      (require 'org-roam-protocol)
+      :custom
+      (org-roam-directory "~/org/notes")
+      :bind
+      (:map org-roam-mode-map
+              (("C-c n l" . org-roam)
+               ("C-c n f" . org-roam-find-file)
+               ("C-c n g" . org-roam-graph))
+              :map org-mode-map
+              (("C-c n i" . org-roam-insert))
+              (("C-c n I" . org-roam-insert-immediate))))
 
-  (use-package org-roam-server
-    :after org-roam-mode
-    :config
-    (setq org-roam-server-host "127.0.0.1"
-          org-roam-server-port 8080
-          org-roam-server-authenticate nil
-          org-roam-server-export-inline-images t
-          org-roam-server-serve-files nil
-          org-roam-server-served-file-extensions '("pdf" "mp4" "ogv")
-          org-roam-server-network-poll t
-          org-roam-server-network-arrows nil
-          org-roam-server-network-label-truncate t
-          org-roam-server-network-label-truncate-length 60
-          org-roam-server-network-label-wrap-length 20))
 
-  (use-package org-roam-protocol
-    :ensure nil
-    :after org-roam-mode)
+    (use-package org-roam-server
+      :after org-roam-mode
+      :config
+      (setq org-roam-server-host "127.0.0.1"
+            org-roam-server-port 8080
+            org-roam-server-authenticate nil
+            org-roam-server-export-inline-images t
+            org-roam-server-serve-files nil
+            org-roam-server-served-file-extensions '("pdf" "mp4" "ogv")
+            org-roam-server-network-poll t
+            org-roam-server-network-arrows nil
+            org-roam-server-network-label-truncate t
+            org-roam-server-network-label-truncate-length 60
+            org-roam-server-network-label-wrap-length 20))
 #+end_src
 * Programming / Development
 ** Projectile
@@ -599,45 +598,45 @@
 #+end_src
 * Completion and snippets
 #+begin_src emacs-lisp
-;; append yasnippet support as described in the following link
-;; https://www.reddit.com/r/emacs/comments/3r9fic/best_practicestip_for_companymode_andor_yasnippet/
-(defvar company-mode/enable-yas t "Enable yasnippet for all backends.")
-(defun company-mode/backend-with-yas (backend)
-  (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
-  backend
-  (append (if (consp backend) backend (list backend))
-          '(:with company-yasnippet))))
+    ;; append yasnippet support as described in the following link
+    ;; https://www.reddit.com/r/emacs/comments/3r9fic/best_practicestip_for_companymode_andor_yasnippet/
+    (defvar company-mode/enable-yas t "Enable yasnippet for all backends.")
+    (defun company-mode/backend-with-yas (backend)
+      (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+      backend
+      (append (if (consp backend) backend (list backend))
+              '(:with company-yasnippet))))
 
-(use-package company
-  :demand t
-  :bind (:map company-active-map
-         ("<tab>" . company-complete-selection)
-         ("<down>" . company-select-next))
-  :custom
-  (company-minimum-prefix-length 1)
-  (company-idle-delay 0.1)
-  :config
-  (global-company-mode)
-  (global-set-key (kbd "TAB") #'company-indent-or-complete-common))
+    (use-package company
+      :demand t
+      :bind (:map company-active-map
+             ("<tab>" . company-complete-selection)
+             ("<down>" . company-select-next))
+      :custom
+      (company-minimum-prefix-length 1)
+      (company-idle-delay 0.1)
+      :config
+  ;;    (global-company-mode)
+      (global-set-key (kbd "TAB") #'company-indent-or-complete-common))
 
-(use-package company-bibtex
-  :if (acemacs/is-orbi)
-  :after company
-  :config
-  (setq company-bibtex-bibliography "/home/urbi/Documents/diss/references.bib")
-  (add-to-list 'company-backends 'company-bibtex))
-  (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+    (use-package company-bibtex
+      :if (acemacs/is-orbi)
+      :after company
+      :config
+      (setq company-bibtex-bibliography "/home/urbi/Documents/diss/references.bib")
+      (add-to-list 'company-backends 'company-bibtex))
+      (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
 
-;; (use-package company-box
-;;   :hook (company-mode . company-box-mode))
+    (use-package company-box
+      :hook (company-mode . company-box-mode))
 
-;; snippets and advanced syntax checking
-(use-package yasnippet
-  :config
-  (yas-global-mode))
+    ;; snippets and advanced syntax checking
+    (use-package yasnippet
+      :config
+      (yas-global-mode))
 
-(use-package yasnippet-snippets
-  :after yasnippet)
+    (use-package yasnippet-snippets
+      :after yasnippet)
 #+end_src
 * Start server
 #+begin_src emacs-lisp
