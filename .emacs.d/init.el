@@ -345,14 +345,26 @@
   (require 'org-protocol)
 
   (setq org-todo-keywords
-    '((sequence "TODO(t)" "NEXT(n)" "REVIEW(v)" "WAIT(w)" "|" "DONE(d!)")))
+        '((sequence "TODO(t)" "NEXT(n)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w)" "|" "DONE(d!)")))
 
   ;; Save Org buffers after refiling!
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
-  (setq org-capture-templates
-        '(("t" "todo" entry (file+headline "~/org/todo.org" "Tasks")
-           "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0            d\"))\n%a\n")))
+(setq org-capture-templates
+  '(("g" "general")
+      ("gt" "todo" entry (file+headline "~/org/todo.org" "Tasks")
+       "* TODO %?\n")
+      ("gm" "todo mail" entry (file+headline "~/org/todo.org" "Tasks")
+       "* TODO %?\n from %a")
+    ("w" "work")
+      ("wt" "todo" entry (file+headline "~/org/work.org" "Todo")
+       "* TODO %?\n")
+    ("t" "tvv")
+      ("tt" "todo" entry (file+headline "~/org/todo.org" "Todo")
+       "* TODO %?\n")
+      ("tm" "todo mail" entry (file+headline "~/org/tvv.org" "Inbox")
+       "* TODO %?\n from %a")
+    ))
 
   (setq org-tag-alist
     '((:startgroup)
@@ -360,6 +372,8 @@
        (:endgroup)
        ("@home" . ?H)
        ("@work" . ?W)
+       ("@tvv" .  ?T)
+       ("@others" . ?O)
        ("idea" . ?i)))
 
   (setq org-html-doctype "html5"
@@ -464,12 +478,15 @@
 (use-package projectile-ripgrep
   :after projectile)
 
+(use-package cmake-mode)
+
 (use-package magit
   :defer t
   :hook
   (magit-mode . visual-line-mode)
   :custom
-  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
+  (magit-diff-refine-hunk t))
 
 ;; work with gitlab forges
 (use-package forge
@@ -514,6 +531,11 @@
                           (lsp-deferred)))
   :init
   (advice-add 'python-mode :before 'elpy-enable))
+
+(use-package c++-mode
+  :ensure nil
+  :hook
+(c++-mode . lsp-deferred))
 
 (use-package ein
   :defer t)
