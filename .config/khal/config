@@ -17,6 +17,10 @@
     path = ~/calendars/nextcloud/jj
     color = light red
 
+  [[ncjudit]]
+    path = ~/calendars/nextcloud/judit-wichtig_shared_by_judit
+    color = light gray
+
 [default]
 timedelta = 5d
 highlight_event_days = true
