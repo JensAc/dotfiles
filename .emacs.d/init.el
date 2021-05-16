@@ -412,7 +412,8 @@
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((emacs-lisp . t)
-     (matlab . t)))
+     (matlab . t)
+     (latex . t)))
 
   (acemacs/org-font-setup))
 
@@ -521,16 +522,18 @@
   ("<f5>" . dap-hydra))
 
 (use-package elpy
-  :defer t
-  :custom
-  (elpy-formatter "black")
-  (elpy-rpc-timeout 10)
-  :hook
-  (elpy-mode . (lambda ()
-                          (require 'dap-python)
-                          (lsp-deferred)))
-  :init
-  (advice-add 'python-mode :before 'elpy-enable))
+    :defer t
+    :custom
+    (elpy-formatter "black")
+    (elpy-rpc-timeout 10)
+    :hook
+    (elpy-mode . (lambda ()
+                            (require 'dap-python)
+                            (lsp-deferred)))
+    :init
+    (advice-add 'python-mode :before 'elpy-enable))
+
+(use-package pyenv-mode)
 
 (use-package c++-mode
   :ensure nil
@@ -539,6 +542,9 @@
 
 (use-package ein
   :defer t)
+
+(use-package yaml-mode
+  :hook (yaml-mode . lsp-deferred))
 
 (use-package lsp-latex
   :defer t)
