@@ -1,11 +1,16 @@
 ;; define function for checking whether we're running on any im
-(defun acemacs/is-im ()
-    "Check whether we are on any im."
-    (if (string-match "im.*" (system-name)) t nil))
+  (defun acemacs/is-im ()
+      "Check whether we are on any im."
+      (if (string-match "im.*" (system-name)) t nil))
 
-(defun acemacs/is-orbi ()
-    "Check whether we are on orbi."
-    (if (string-match "orbi" (system-name)) t nil))
+  (defun acemacs/is-orbi ()
+      "Check whether we are on orbi."
+      (if (string-match "orbi" (system-name)) t nil))
+
+;; show every 30 minutes the events of the next 31 minutes from the calendar
+(defun acemacs/events ()
+  (shell-command "bash -c 'notify-send -t 5000 -u low \"$(khal list -d institut --format \"{start-time} : {title}\" now 31m)\"'"))
+(run-with-timer 0  (* 30 60) 'acemacs/events)
 
 ;; You will most likely need to adjust this font size for your system!
 (defvar acemacs/default-font-size 120)
@@ -269,7 +274,10 @@
   ;; don't keep message buffers around
   (setq message-kill-buffer-on-exit t)
 
-                                        ; don't show related messages and threads by default. Toggle them with z r and z t
+  ;; set mu4e-view-fields 
+  (setq mu4e-view-fields '(:from :to :cc :bcc :subject :date :maildir :tags :attachments :signature :decryption))
+
+  ;; don't show related messages and threads by default. Toggle them with z r and z t
   (setq mu4e-headers-include-related nil)
   (setq mu4e-headers-show-threads nil))
 
@@ -434,32 +442,16 @@
   (after-init . org-roam-mode)
   :config
   (require 'org-roam-protocol)
+  :init
+  (setq org-roam-v2-ack t)
   :custom
   (org-roam-directory "~/org/notes")
   :bind
-  (:map org-roam-mode-map
-          (("C-c n l" . org-roam)
-           ("C-c n f" . org-roam-find-file)
-           ("C-c n g" . org-roam-graph))
-          :map org-mode-map
-          (("C-c n i" . org-roam-insert))
-          (("C-c n I" . org-roam-insert-immediate))))
-
-
-(use-package org-roam-server
-  :after org-roam-mode
-  :config
-  (setq org-roam-server-host "127.0.0.1"
-        org-roam-server-port 8080
-        org-roam-server-authenticate nil
-        org-roam-server-export-inline-images t
-        org-roam-server-serve-files nil
-        org-roam-server-served-file-extensions '("pdf" "mp4" "ogv")
-        org-roam-server-network-poll t
-        org-roam-server-network-arrows nil
-        org-roam-server-network-label-truncate t
-        org-roam-server-network-label-truncate-length 60
-        org-roam-server-network-label-wrap-length 20))
+  (   (("C-c n l" . org-roam-buffer-toggle)
+       ("C-c n f" . org-roam-node-find)
+       ("C-c n g" . org-roam-graph)
+       ("C-c n i" . org-roam-insert)
+       ("C-c n I" . org-roam-insert-immediate))))
 
 (use-package projectile
   :diminish projectile-mode
@@ -493,70 +485,81 @@
 (use-package forge
   :defer t
   :config
-  (add-to-list 'forge-alist '("git.rwth-aachen.de" "git.rwth-aachen.de/api/v4" "git.rwth-aachen.de" forge-gitlab-repository)))
+  (add-to-list 'forge-alist '("git.rwth-aachen.de" "git.rwth-aachen.de/api/v4" "git.rwth-aachen.de" forge-gitlab-repository))
+  (add-to-list 'forge-alist '("github.com" "api.github.com" "github.com" forge-github-repository)))
 
-(use-package lsp-mode
-  :commands (lsp lsp-deferred)
-  :init
-  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+;; (use-package lsp-mode
+;;   :commands (lsp lsp-deferred)
+;;   :init
+;;   (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+;;   :config
+;;   (lsp-enable-which-key-integration t)
+;;   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+;;   (lsp-headerline-breadcrumb-mode)
+;;   (setq gc-cons-threshold 100000000)
+;;   (setq read-process-output-max (* 1024 1024)))
+
+;; (use-package lsp-ui
+;;   :hook (lsp-mode . lsp-ui-mode)
+;;   :custom
+;;   (lsp-ui-doc-position 'bottom))
+
+;; (use-package lsp-treemacs
+;;   :after lsp)
+
+;; ;; dap mode for debugging
+;; ;; (use-package dap-mode
+;;   :config
+;;   (setq dap-ui-controls-mode nil)
+;;   :bind
+;;   ("<f5>" . dap-hydra))
+
+(use-package eglot
   :config
-  (lsp-enable-which-key-integration t)
-  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-  (lsp-headerline-breadcrumb-mode)
-  (setq gc-cons-threshold 100000000)
-  (setq read-process-output-max (* 1024 1024)))
+  (add-to-list 'eglot-server-programs '(tex-mode . ("texlab")))
+  :hook
+  ((LaTeX-mode . eglot-ensure)
+  (c++-mode . eglot-ensure)
+  (c-mode . eglot-ensure)
+  (python-mode . eglot-ensure)))
 
-(use-package lsp-ui
-  :hook (lsp-mode . lsp-ui-mode)
-  :custom
-  (lsp-ui-doc-position 'bottom))
+(use-package c++-mode
+:ensure nil
+:hook
+(c++-mode . company-mode))
 
-(use-package lsp-treemacs
-  :after lsp)
-
-;; dap mode for debugging
-(use-package dap-mode
-  :config
-  (setq dap-ui-controls-mode nil)
-  :bind
-  ("<f5>" . dap-hydra))
+(use-package c-mode
+:ensure nil
+:hook
+(c-mode . company-mode))
 
 (use-package elpy
     :defer t
     :custom
     (elpy-formatter "black")
     (elpy-rpc-timeout 10)
-    :hook
-    (elpy-mode . (lambda ()
-                            (require 'dap-python)
-                            (lsp-deferred)))
+    ;; :hook
+    ;; (elpy-mode . (lambda ()
+    ;;                         (require 'dap-python)
+    ;;                         (lsp-deferred)))
     :init
     (advice-add 'python-mode :before 'elpy-enable))
 
 (use-package pyenv-mode)
 
-(use-package c++-mode
-  :ensure nil
-  :hook
-(c++-mode . lsp-deferred))
-
 (use-package ein
   :defer t)
 
-(use-package yaml-mode
-  :hook (yaml-mode . lsp-deferred))
+(use-package yaml-mode)
 
-(use-package lsp-latex
-  :defer t)
+;; (use-package lsp-latex
+;;   :defer t)
 
 (use-package tex
   :defer t
   :ensure auctex
   :hook
-  (LaTeX-mode . (lambda ()
-                  (require 'lsp-latex)
-                  (lsp)
-                  (flyspell-mode)))
+  (LaTeX-mode . (lambda () (flyspell-mode)))
   :config
   (TeX-source-correlate-mode)
   :custom
