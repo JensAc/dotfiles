@@ -1,13 +1,13 @@
 ;; define function for checking whether we're running on any im
-  (defun acemacs/is-im ()
-      "Check whether we are on any im."
-      (if (string-match "im.*" (system-name)) t nil))
+   (defun acemacs/is-im ()
+       "Check whether we are on any im."
+       (if (string-match "im.*" (system-name)) t nil))
 
-  (defun acemacs/is-orbi ()
-      "Check whether we are on orbi."
-      (if (string-match "orbi" (system-name)) t nil))
+   (defun acemacs/is-orbi ()
+       "Check whether we are on orbi."
+       (if (string-match "orbi" (system-name)) t nil))
 
-;; show every 30 minutes the events of the next 31 minutes from the calendar
+ ;; show every 30 minutes the events of the next 31 minutes from the calendar
 (defun acemacs/events ()
   (shell-command "bash -c 'notify-send -t 5000 -u low \"$(khal list -d institut --format \"{start-time} : {title}\" now 31m)\"'"))
 (run-with-timer 0  (* 30 60) 'acemacs/events)
@@ -51,6 +51,7 @@
 (set-face-attribute 'variable-pitch nil :font acemacs/font-fixed-pitch :height acemacs/default-font-size :weight 'regular)
 
 (column-number-mode)
+(setq display-line-numbers-type 'relative)
 (global-display-line-numbers-mode t)
 
 ;; NOTE: The first time you load your configuration on a new machine, you'll
@@ -163,7 +164,14 @@
   (evil-global-set-key 'normal (kbd "C-w <down>") 'evil-window-down)
   (evil-global-set-key 'normal (kbd "C-w <up>") 'evil-window-up)
   (evil-global-set-key 'normal (kbd "C-w <left>") 'evil-window-left)
-  (evil-global-set-key 'normal (kbd "C-w <right>") 'evil-window-right))
+  (evil-global-set-key 'normal (kbd "C-w <right>") 'evil-window-right)
+  (evil-global-set-key 'normal (kbd "H-k") 'evil-window-down)
+  (evil-global-set-key 'normal (kbd "H-i") 'evil-window-up)
+  (evil-global-set-key 'normal (kbd "H-j") 'evil-window-left)
+  (evil-global-set-key 'normal (kbd "H-l") 'evil-window-right)
+  (evil-global-set-key 'normal (kbd "H-c") 'evil-window-delete)
+  (evil-global-set-key 'normal (kbd "H-v") 'evil-window-vsplit)
+  (evil-global-set-key 'normal (kbd "H-s") 'evil-window-split))
 
 (use-package evil-collection
   :after evil
@@ -353,7 +361,7 @@
   (require 'org-protocol)
 
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "NEXT(n)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w)" "|" "DONE(d!)")))
+        '((sequence "TODO(t)" "NEXT(n)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w)" "|" "DONE(d!)" "CANCELED(c!)")))
 
   ;; Save Org buffers after refiling!
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
@@ -437,21 +445,21 @@
   :defer t)
 
 (use-package org-roam
-  :if (acemacs/is-orbi)
-  :hook
-  (after-init . org-roam-mode)
-  :config
-  (require 'org-roam-protocol)
-  :init
-  (setq org-roam-v2-ack t)
-  :custom
-  (org-roam-directory "~/org/notes")
-  :bind
-  (   (("C-c n l" . org-roam-buffer-toggle)
-       ("C-c n f" . org-roam-node-find)
-       ("C-c n g" . org-roam-graph)
-       ("C-c n i" . org-roam-insert)
-       ("C-c n I" . org-roam-insert-immediate))))
+    :if (acemacs/is-orbi)
+;;    :hook
+  ;;  (after-init . org-roam-mode)
+    :config
+    (require 'org-roam-protocol)
+    :init
+    (setq org-roam-v2-ack t)
+    :custom
+    (org-roam-directory "~/org/notes")
+    :bind
+    (   (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n g" . org-roam-graph)
+         ("C-c n i" . org-roam-insert)
+         ("C-c n I" . org-roam-insert-immediate))))
 
 (use-package projectile
   :diminish projectile-mode
@@ -559,7 +567,7 @@
   :defer t
   :ensure auctex
   :hook
-  (LaTeX-mode . (lambda () (flyspell-mode)))
+  (LaTeX-mode . (lambda () (flyspell-mode) (company-mode)))
   :config
   (TeX-source-correlate-mode)
   :custom
