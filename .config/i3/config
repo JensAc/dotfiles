@@ -241,6 +241,8 @@ exec --no-startup-id "nextcloud"
 exec --no-startup-id "nm-applet"
 exec --no-startup-id "dunst"
 exec --no-startup-id "davmail -notray"
+exec --no-startup-id "xmodmap ~/.Xmodmap"
+
 
 # set figures in floating mode
 for_window [title="Figure*"] floating enable
@@ -269,6 +271,6 @@ bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightne
 exec feh --bg-tile ~/Pictures/Wallpapers/blackwhitenoise.jpg
 
 # os keymaps
-bindsym Shift+space exec --no-startup-id (setxkbmap -query | grep -q "layout:\s\+de") && (setxkbmap us && notify-send -t 500 "us") || (setxkbmap de && notify-send -t 500 "de")
+bindsym Shift+space exec --no-startup-id (setxkbmap -query | grep -q "layout:\s\+de") && (setxkbmap us && xmodmap ~/.Xmodmap && notify-send -t 500 "us") || (setxkbmap de && xmodmap ~/.Xmodmap && notify-send -t 500 "de")
 
  
