@@ -21,66 +21,70 @@
 
 * Basic UI configuration
 #+begin_src emacs-lisp
-    ;; You will most likely need to adjust this font size for your system!
-    (defvar acemacs/default-font-size 120)
 
-    (setq inhibit-startup-message t)
+  ;; do not exit on C-x C-c
+  (global-unset-key (kbd "C-x C-c"))
 
-    (scroll-bar-mode -1)        ; Disable visible scrollbar
-    (tool-bar-mode -1)          ; Disable the toolbar
-    (tooltip-mode -1)           ; Disable tooltips
-    (set-fringe-mode 10)        ; Give some breathing room
+  ;; You will most likely need to adjust this font size for your system!
+  (defvar acemacs/default-font-size 120)
 
-    (menu-bar-mode -1)            ; Disable the menu bar
+  (setq inhibit-startup-message t)
 
-    ;; Set up the visible bell
-    (setq visible-bell t)
+  (scroll-bar-mode -1)        ; Disable visible scrollbar
+  (tool-bar-mode -1)          ; Disable the toolbar
+  (tooltip-mode -1)           ; Disable tooltips
+  (set-fringe-mode 10)        ; Give some breathing room
 
-    ;; Disable line numbers for some modes
-    (dolist (mode '(org-mode-hook
-                    term-mode-hook
-                    treemacs-mode-hook
-                    shell-mode-hook
-                    mu4e-headers-mode-hook
-                    eshell-mode-hook))
-      (add-hook mode (lambda () (display-line-numbers-mode 0))))
+  (menu-bar-mode -1)            ; Disable the menu bar
 
-    ;; Font Configuration ----------------------------------------------------------
-    (defvar acemacs/font "Iosevka")
-    (defvar acemacs/font-fixed-pitch "Iosevka Aile")
+  ;; Set up the visible bell
+  (setq visible-bell t)
 
-    (if (acemacs/is-im) (setq acemacs/font "DejaVu Sans Mono" acemacs/font-fixed-pitch "DejaVu Sans"))
+  ;; Disable line numbers for some modes
+  (dolist (mode '(org-mode-hook
+                  term-mode-hook
+                  treemacs-mode-hook
+                  shell-mode-hook
+                  mu4e-headers-mode-hook
+                  eshell-mode-hook))
+    (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
-    (set-face-attribute 'default nil :font acemacs/font :height acemacs/default-font-size)
+  ;; Font Configuration ----------------------------------------------------------
+  (defvar acemacs/font "Iosevka")
+  (defvar acemacs/font-fixed-pitch "Iosevka Aile")
 
-    ;; Set the fixed pitch face
-    (set-face-attribute 'fixed-pitch nil :font acemacs/font :height acemacs/default-font-size)
+  (if (acemacs/is-im) (setq acemacs/font "DejaVu Sans Mono" acemacs/font-fixed-pitch "DejaVu Sans"))
 
-    ;; Set the variable pitch face
-    (set-face-attribute 'variable-pitch nil :font acemacs/font-fixed-pitch :height acemacs/default-font-size :weight 'regular)
+  (set-face-attribute 'default nil :font acemacs/font :height acemacs/default-font-size)
 
-    (column-number-mode)
-    (setq display-line-numbers-type 'relative)
-    (global-display-line-numbers-mode t)
+  ;; Set the fixed pitch face
+  (set-face-attribute 'fixed-pitch nil :font acemacs/font :height acemacs/default-font-size)
 
-    ;; NOTE: The first time you load your configuration on a new machine, you'll
-    ;; need to run the following command interactively so that mode line icons
-    ;; display correctly:
-    ;;
-    ;; M-x all-the-icons-install-fonts
+  ;; Set the variable pitch face
+  (set-face-attribute 'variable-pitch nil :font acemacs/font-fixed-pitch :height acemacs/default-font-size :weight 'regular)
 
-    (use-package all-the-icons)
+  (column-number-mode)
+  (setq display-line-numbers-type 'relative)
+  (global-display-line-numbers-mode t)
 
-    (use-package doom-modeline
-      :init (doom-modeline-mode 1)
-      :custom ((doom-modeline-height 15)))
+  ;; NOTE: The first time you load your configuration on a new machine, you'll
+  ;; need to run the following command interactively so that mode line icons
+  ;; display correctly:
+  ;;
+  ;; M-x all-the-icons-install-fonts
 
-    (use-package doom-themes
-      :init
-      (if (acemacs/is-orbi) (load-theme 'doom-dracula t) (load-theme 'doom-solarized-light t)))
+  (use-package all-the-icons)
 
-    (use-package rainbow-delimiters
-      :hook (prog-mode . rainbow-delimiters-mode))
+  (use-package doom-modeline
+    :init (doom-modeline-mode 1)
+    :custom ((doom-modeline-height 15)))
+
+  (use-package doom-themes
+    :init
+    (if (acemacs/is-orbi) (load-theme 'doom-dracula t) (load-theme 'doom-solarized-light t)))
+
+  (use-package rainbow-delimiters
+    :hook (prog-mode . rainbow-delimiters-mode))
 #+end_src
 
 * Package management
@@ -471,7 +475,18 @@
 
     (use-package org-tree-slide
       :defer t)
+
+    (use-package khalel
+      :config
+      (setq khalel-khal-command "~/.local/bin/khal")
+      (setq khalel-vdirsyncer-command "vdirsyncer")
+      (setq khalel-default-calendar "ncpersonal")
+      (setq khalel-capture-key "e")
+      (setq khalel-import-org-file (concat org-directory "/calendar.org"))
+      (setq khalel-import-time-delta "30d")
+      (khalel-add-capture-template))
 #+end_src
+
 * Org roam
 #+begin_src emacs-lisp
   (use-package org-roam
@@ -533,39 +548,11 @@
     (add-to-list 'forge-alist '("git.rwth-aachen.de" "git.rwth-aachen.de/api/v4" "git.rwth-aachen.de" forge-gitlab-repository))
     (add-to-list 'forge-alist '("github.com" "api.github.com" "github.com" forge-github-repository)))
 #+end_src
-** lsp mode
-#+begin_src emacs-lisp
-  ;; (use-package lsp-mode
-  ;;   :commands (lsp lsp-deferred)
-  ;;   :init
-  ;;   (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
-  ;;   :config
-  ;;   (lsp-enable-which-key-integration t)
-  ;;   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-  ;;   (lsp-headerline-breadcrumb-mode)
-  ;;   (setq gc-cons-threshold 100000000)
-  ;;   (setq read-process-output-max (* 1024 1024)))
-
-  ;; (use-package lsp-ui
-  ;;   :hook (lsp-mode . lsp-ui-mode)
-  ;;   :custom
-  ;;   (lsp-ui-doc-position 'bottom))
-
-  ;; (use-package lsp-treemacs
-  ;;   :after lsp)
-
-  ;; ;; dap mode for debugging
-  ;; ;; (use-package dap-mode
-  ;;   :config
-  ;;   (setq dap-ui-controls-mode nil)
-  ;;   :bind
-  ;;   ("<f5>" . dap-hydra))
-#+end_src
 ** eglot
 #+begin_src emacs-lisp
   (use-package eglot
     :config
-    (add-to-list 'eglot-server-programs '(tex-mode . ("texlab")))
+    (add-to-list 'eglot-server-programs '(tex-mode . ("digestif")))
     :hook
     ((LaTeX-mode . eglot-ensure)
     (c++-mode . eglot-ensure)
@@ -591,10 +578,6 @@
       :custom
       (elpy-formatter "black")
       (elpy-rpc-timeout 10)
-      ;; :hook
-      ;; (elpy-mode . (lambda ()
-      ;;                         (require 'dap-python)
-      ;;                         (lsp-deferred)))
       :init
       (advice-add 'python-mode :before 'elpy-enable))
 
@@ -612,27 +595,26 @@
 #+end_src
 ** LaTeX
 #+begin_src emacs-lisp
-  ;; (use-package lsp-latex
-  ;;   :defer t)
+    (use-package tex
+      :defer t
+      :ensure auctex
+      :hook
+      (LaTeX-mode . (lambda () (flyspell-mode) (company-mode)))
+      :config
+      (TeX-source-correlate-mode)
+      :custom
+      (TeX-command-extra-options "--shell-escape")
+      (TeX-source-correlate-start-server t))
 
-  (use-package tex
-    :defer t
-    :ensure auctex
-    :hook
-    (LaTeX-mode . (lambda () (flyspell-mode) (company-mode)))
-    :config
-    (TeX-source-correlate-mode)
-    :custom
-    (TeX-command-extra-options "--shell-escape")
-    (TeX-source-correlate-start-server t))
-
-  ;; ivy bibtex
-  (use-package ivy-bibtex
-    :if (acemacs/is-orbi)
-    :commands
-    (ivy-bibtex)
-    :custom
-    (bibtex-completion-bibliography "~/Documents/diss/references.bib"))
+    ;; ivy bibtex
+    (use-package ivy-bibtex
+      :if (acemacs/is-orbi)
+      :commands
+      (ivy-bibtex)
+      :custom
+      (bibtex-completion-bibliography "~/Documents/diss/references.bib"))
+  ;; tikz
+(use-package tikz)
 #+end_src
 ** Matlab
 #+begin_src emacs-lisp
@@ -643,47 +625,64 @@
     :config
     (setq matlab-shell-command "/home/urbi/Software/Matlab2019a/bin/matlab"))
 #+end_src
+** Lua
+Use lua5.3 for now, as e.g. the "see" package works only for lua5.3
+#+begin_src emacs-lisp
+  (use-package lua-mode
+    :config
+    (setenv "LUA_PATH"
+            "/usr/share/lua/5.3/?.lua;/usr/share/lua/5.3/?/init.lua;/usr/lib/lua/5.3/?.lua;/usr/lib/lua/5.3/?/init.lua;./?.lua;./?/init.lua;/home/urbi/.luarocks/share/lua/5.3/?.lua;/home/urbi/.luarocks/share/lua/5.3/?/init.lua")
+    (setenv "LUA_CPATH"
+            "/usr/lib/lua/5.3/?.so;/usr/lib/lua/5.3/loadall.so;./?.so;/home/urbi/.luarocks/lib/lua/5.3/?.so")
+    (setq lua-default-application "lua5.3")
+    )
+#+end_src
+
 * Completion and snippets
 #+begin_src emacs-lisp
-    ;; append yasnippet support as described in the following link
-    ;; https://www.reddit.com/r/emacs/comments/3r9fic/best_practicestip_for_companymode_andor_yasnippet/
-    (defvar company-mode/enable-yas t "Enable yasnippet for all backends.")
-    (defun company-mode/backend-with-yas (backend)
-      (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
-      backend
+  ;; append yasnippet support as described in the following link
+  ;; https://www.reddit.com/r/emacs/comments/3r9fic/best_practicestip_for_companymode_andor_yasnippet/
+  (defvar company-mode/enable-yas t "Enable yasnippet for all backends.")
+  (defun company-mode/backend-with-yas (backend)
+    (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+        backend
       (append (if (consp backend) backend (list backend))
               '(:with company-yasnippet))))
 
-    (use-package company
-      :demand t
-      :bind (:map company-active-map
-             ("<tab>" . company-complete-selection)
-             ("<down>" . company-select-next))
-      :custom
-      (company-minimum-prefix-length 1)
-      (company-idle-delay 0.1)
-      :config
-  ;;    (global-company-mode)
-      (global-set-key (kbd "TAB") #'company-indent-or-complete-common))
+  (use-package company
+    :demand t
+    :bind (:map company-active-map
+                ("<tab>" . company-complete-selection)
+                ("<down>" . company-select-next))
+    :custom
+    (company-minimum-prefix-length 1)
+    (company-idle-delay 0.1)
+    :config
+    ;;    (global-company-mode)
+    (global-set-key (kbd "TAB") #'company-indent-or-complete-common))
 
-    (use-package company-bibtex
-      :if (acemacs/is-orbi)
-      :after company
-      :config
-      (setq company-bibtex-bibliography "/home/urbi/Documents/diss/references.bib")
-      (add-to-list 'company-backends 'company-bibtex))
-      (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+  (use-package company-bibtex
+    :if (acemacs/is-orbi)
+    :after company
+    :config
+    (setq company-bibtex-bibliography "/home/urbi/Documents/diss/references.bib")
+    (add-to-list 'company-backends 'company-bibtex))
 
-    (use-package company-box
-      :hook (company-mode . company-box-mode))
+  (use-package company-lua
+    :config
+    (add-to-list 'company-backends 'company-lua))
+  (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
 
-    ;; snippets and advanced syntax checking
-    (use-package yasnippet
-      :config
-      (yas-global-mode))
+  (use-package company-box
+    :hook (company-mode . company-box-mode))
 
-    (use-package yasnippet-snippets
-      :after yasnippet)
+  ;; snippets and advanced syntax checking
+  (use-package yasnippet
+    :config
+    (yas-global-mode))
+
+  (use-package yasnippet-snippets
+    :after yasnippet)
 #+end_src
 * Start server
 #+begin_src emacs-lisp

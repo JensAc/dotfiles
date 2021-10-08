@@ -12,6 +12,9 @@
   (shell-command "bash -c 'notify-send -t 5000 -u low \"$(khal list -d institut --format \"{start-time} : {title}\" now 31m)\"'"))
 (run-with-timer 0  (* 30 60) 'acemacs/events)
 
+;; do not exit on C-x C-c
+(global-unset-key (kbd "C-x C-c"))
+
 ;; You will most likely need to adjust this font size for your system!
 (defvar acemacs/default-font-size 120)
 
@@ -444,6 +447,16 @@
 (use-package org-tree-slide
   :defer t)
 
+(use-package khalel
+  :config
+  (setq khalel-khal-command "~/.local/bin/khal")
+  (setq khalel-vdirsyncer-command "vdirsyncer")
+  (setq khalel-default-calendar "ncpersonal")
+  (setq khalel-capture-key "e")
+  (setq khalel-import-org-file (concat org-directory "/calendar.org"))
+  (setq khalel-import-time-delta "30d")
+  (khalel-add-capture-template))
+
 (use-package org-roam
     :if (acemacs/is-orbi)
 ;;    :hook
@@ -496,35 +509,9 @@
   (add-to-list 'forge-alist '("git.rwth-aachen.de" "git.rwth-aachen.de/api/v4" "git.rwth-aachen.de" forge-gitlab-repository))
   (add-to-list 'forge-alist '("github.com" "api.github.com" "github.com" forge-github-repository)))
 
-;; (use-package lsp-mode
-;;   :commands (lsp lsp-deferred)
-;;   :init
-;;   (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
-;;   :config
-;;   (lsp-enable-which-key-integration t)
-;;   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-;;   (lsp-headerline-breadcrumb-mode)
-;;   (setq gc-cons-threshold 100000000)
-;;   (setq read-process-output-max (* 1024 1024)))
-
-;; (use-package lsp-ui
-;;   :hook (lsp-mode . lsp-ui-mode)
-;;   :custom
-;;   (lsp-ui-doc-position 'bottom))
-
-;; (use-package lsp-treemacs
-;;   :after lsp)
-
-;; ;; dap mode for debugging
-;; ;; (use-package dap-mode
-;;   :config
-;;   (setq dap-ui-controls-mode nil)
-;;   :bind
-;;   ("<f5>" . dap-hydra))
-
 (use-package eglot
   :config
-  (add-to-list 'eglot-server-programs '(tex-mode . ("texlab")))
+  (add-to-list 'eglot-server-programs '(tex-mode . ("digestif")))
   :hook
   ((LaTeX-mode . eglot-ensure)
   (c++-mode . eglot-ensure)
@@ -546,10 +533,6 @@
     :custom
     (elpy-formatter "black")
     (elpy-rpc-timeout 10)
-    ;; :hook
-    ;; (elpy-mode . (lambda ()
-    ;;                         (require 'dap-python)
-    ;;                         (lsp-deferred)))
     :init
     (advice-add 'python-mode :before 'elpy-enable))
 
@@ -560,27 +543,26 @@
 
 (use-package yaml-mode)
 
-;; (use-package lsp-latex
-;;   :defer t)
-
 (use-package tex
-  :defer t
-  :ensure auctex
-  :hook
-  (LaTeX-mode . (lambda () (flyspell-mode) (company-mode)))
-  :config
-  (TeX-source-correlate-mode)
-  :custom
-  (TeX-command-extra-options "--shell-escape")
-  (TeX-source-correlate-start-server t))
+      :defer t
+      :ensure auctex
+      :hook
+      (LaTeX-mode . (lambda () (flyspell-mode) (company-mode)))
+      :config
+      (TeX-source-correlate-mode)
+      :custom
+      (TeX-command-extra-options "--shell-escape")
+      (TeX-source-correlate-start-server t))
 
-;; ivy bibtex
-(use-package ivy-bibtex
-  :if (acemacs/is-orbi)
-  :commands
-  (ivy-bibtex)
-  :custom
-  (bibtex-completion-bibliography "~/Documents/diss/references.bib"))
+    ;; ivy bibtex
+    (use-package ivy-bibtex
+      :if (acemacs/is-orbi)
+      :commands
+      (ivy-bibtex)
+      :custom
+      (bibtex-completion-bibliography "~/Documents/diss/references.bib"))
+  ;; tikz
+(use-package tikz)
 
 (use-package matlab
   :if (acemacs/is-orbi)
@@ -589,44 +571,57 @@
   :config
   (setq matlab-shell-command "/home/urbi/Software/Matlab2019a/bin/matlab"))
 
+(use-package lua-mode
+  :config
+  (setenv "LUA_PATH"
+          "/usr/share/lua/5.3/?.lua;/usr/share/lua/5.3/?/init.lua;/usr/lib/lua/5.3/?.lua;/usr/lib/lua/5.3/?/init.lua;./?.lua;./?/init.lua;/home/urbi/.luarocks/share/lua/5.3/?.lua;/home/urbi/.luarocks/share/lua/5.3/?/init.lua")
+  (setenv "LUA_CPATH"
+          "/usr/lib/lua/5.3/?.so;/usr/lib/lua/5.3/loadall.so;./?.so;/home/urbi/.luarocks/lib/lua/5.3/?.so")
+  (setq lua-default-application "lua5.3")
+  )
+
 ;; append yasnippet support as described in the following link
-  ;; https://www.reddit.com/r/emacs/comments/3r9fic/best_practicestip_for_companymode_andor_yasnippet/
-  (defvar company-mode/enable-yas t "Enable yasnippet for all backends.")
-  (defun company-mode/backend-with-yas (backend)
-    (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
-    backend
+;; https://www.reddit.com/r/emacs/comments/3r9fic/best_practicestip_for_companymode_andor_yasnippet/
+(defvar company-mode/enable-yas t "Enable yasnippet for all backends.")
+(defun company-mode/backend-with-yas (backend)
+  (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+      backend
     (append (if (consp backend) backend (list backend))
             '(:with company-yasnippet))))
 
-  (use-package company
-    :demand t
-    :bind (:map company-active-map
-           ("<tab>" . company-complete-selection)
-           ("<down>" . company-select-next))
-    :custom
-    (company-minimum-prefix-length 1)
-    (company-idle-delay 0.1)
-    :config
-;;    (global-company-mode)
-    (global-set-key (kbd "TAB") #'company-indent-or-complete-common))
+(use-package company
+  :demand t
+  :bind (:map company-active-map
+              ("<tab>" . company-complete-selection)
+              ("<down>" . company-select-next))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.1)
+  :config
+  ;;    (global-company-mode)
+  (global-set-key (kbd "TAB") #'company-indent-or-complete-common))
 
-  (use-package company-bibtex
-    :if (acemacs/is-orbi)
-    :after company
-    :config
-    (setq company-bibtex-bibliography "/home/urbi/Documents/diss/references.bib")
-    (add-to-list 'company-backends 'company-bibtex))
-    (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+(use-package company-bibtex
+  :if (acemacs/is-orbi)
+  :after company
+  :config
+  (setq company-bibtex-bibliography "/home/urbi/Documents/diss/references.bib")
+  (add-to-list 'company-backends 'company-bibtex))
 
-  (use-package company-box
-    :hook (company-mode . company-box-mode))
+(use-package company-lua
+  :config
+  (add-to-list 'company-backends 'company-lua))
+(setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
 
-  ;; snippets and advanced syntax checking
-  (use-package yasnippet
-    :config
-    (yas-global-mode))
+(use-package company-box
+  :hook (company-mode . company-box-mode))
 
-  (use-package yasnippet-snippets
-    :after yasnippet)
+;; snippets and advanced syntax checking
+(use-package yasnippet
+  :config
+  (yas-global-mode))
+
+(use-package yasnippet-snippets
+  :after yasnippet)
 
 (server-start)
