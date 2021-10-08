@@ -202,7 +202,7 @@ bar {
     binding_mode       #FF5555 #FF5555 #F8F8F2
   }
         status_command ~/.config/i3/i3status_script.sh
-	font pango:iosevka , file-icons 11
+	font pango:Iosevka Aile , file-icons 11
 }
 
 
