@@ -32,6 +32,7 @@
 
 ;; Disable line numbers for some modes
 (dolist (mode '(org-mode-hook
+		  org-agenda-mode-hook
                 term-mode-hook
                 treemacs-mode-hook
                 shell-mode-hook
@@ -41,7 +42,8 @@
 
 ;; Font Configuration ----------------------------------------------------------
 (defvar acemacs/font "Iosevka")
-(defvar acemacs/font-fixed-pitch "Iosevka Aile")
+(defvar acemacs/font-fixed-pitch "Iosevka")
+(defvar acemacs/font-variable-pitch "Iosevka Aile")
 
 (if (acemacs/is-im) (setq acemacs/font "DejaVu Sans Mono" acemacs/font-fixed-pitch "DejaVu Sans"))
 
@@ -51,7 +53,7 @@
 (set-face-attribute 'fixed-pitch nil :font acemacs/font :height acemacs/default-font-size)
 
 ;; Set the variable pitch face
-(set-face-attribute 'variable-pitch nil :font acemacs/font-fixed-pitch :height acemacs/default-font-size :weight 'regular)
+(set-face-attribute 'variable-pitch nil :font acemacs/font-variable-pitch :height acemacs/default-font-size)
 
 (column-number-mode)
 (setq display-line-numbers-type 'relative)
@@ -232,7 +234,7 @@
                                                   ("/posteo/Sent"    . ?s)
                                                   ("/posteo/Archive" . ?a)
                                                   ("/posteo/Trash"   . ?t)
-                                                  ("/posteo/Dafts"   . ?d) ))))
+                                                  ("/posteo/Drafts"   . ?d) ))))
            ,(make-mu4e-context
              :name "Rwth"
              :enter-func (lambda () (mu4e-message "Entering Rwth context"))
@@ -254,7 +256,7 @@
                                                   ("/rwth/Sent Items"    . ?s)
                                                   ("/rwth/Archive"       . ?a)
                                                   ("/rwth/Deleted Items" . ?t)
-                                                  ("/rwth/Dafts"         . ?d) ))))
+                                                  ("/rwth/Drafts"         . ?d) ))))
            ,(make-mu4e-context
              :name "Ient"
              :enter-func (lambda () (mu4e-message "Entering Ient context"))
@@ -276,7 +278,7 @@
                                                   ("/ient/Sent Items"    . ?s)
                                                   ("/ient/Archive"       . ?a)
                                                   ("/ient/Deleted Items" . ?t)
-                                                  ("/ient/Dafts"         . ?d) ))))
+                                                  ("/ient/Drafts"         . ?d) ))))
            ))
   ;; work with mbsync
   (setq mu4e-get-mail-command "mbsync -a")
@@ -320,7 +322,7 @@
                   (org-level-6 . 1.1)
                   (org-level-7 . 1.1)
                   (org-level-8 . 1.1)))
-    (set-face-attribute (car face) nil :font "Iosevka Aile" :weight 'regular :height (cdr face)))
+    (set-face-attribute (car face) nil :font acemacs/font-variable-pitch :weight 'regular :height (cdr face)))
 
   ;; Ensure that anything that should be fixed-pitch in Org files appears that way
   (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
@@ -354,6 +356,7 @@
   (setq org-agenda-start-with-log-mode t)
   (setq org-log-done 'time)
   (setq org-log-into-drawer t)
+  (setq org-agenda-span 'day)
   (setq org-agenda-files
         '("~/org/"))
 
@@ -364,7 +367,7 @@
   (require 'org-protocol)
 
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "NEXT(n)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w)" "|" "DONE(d!)" "CANCELED(c!)")))
+        '((sequence "TODO(t)" "NEXT(n)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w)" "|" "DONE(d!)" "CANC(c!)")))
 
   ;; Save Org buffers after refiling!
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
@@ -625,3 +628,15 @@
   :after yasnippet)
 
 (server-start)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(safe-local-variable-values '((buffer-read-only . 1))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
