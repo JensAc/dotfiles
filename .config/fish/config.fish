@@ -29,12 +29,6 @@ set -x PATH /home/urbi/.local/share/gem/ruby/3.0.0/bin $PATH
 
 set -x export QT_AUTO_SCREEN_SCALE_FACTOR 1
 
-if ping -c 1 -q host1 &> /dev/null
-    set -Ux CUPS_SERVER "host1:631"
-end
+pyenv init --path | source
+status is-interactive; and pyenv init - | source
 
-# configure pyenv and pyenv-virtualenv\
-pyenv init - | source
-status --is-interactive; and source (pyenv virtualenv-init -|psub)
-
-#starship init fish | source
