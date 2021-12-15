@@ -2,5 +2,5 @@ configuration {
 	font: "pango:iosevka 12";
 	ssh-command: "{terminal} -e "{ssh-client} {host}"";
 	parse-known-hosts: false;
-	theme: "/usr/share/rofi/themes/purple.rasi";
 }
+@theme "/usr/share/rofi/themes/purple.rasi"
