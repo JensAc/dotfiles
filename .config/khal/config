@@ -20,6 +20,14 @@
   [[ncjudit]]
     path = ~/calendars/nextcloud/judit-wichtig_shared_by_judit
     color = light gray
+    
+  [[tvv_vst]]
+    path = ~/calendars/nextcloud_tvv/vorstand_shared_by_Ulf
+    color = light magenta
+    
+  [[tvv_abfall]]
+    path = ~/calendars/nextcloud_tvv/abfallkalender_shared_by_Ulf
+    color = light magenta
 
 [default]
 timedelta = 5d
