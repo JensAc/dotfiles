@@ -119,45 +119,73 @@
     :config
     (setq auth-sources '(password-store)))
 #+end_src
-* Ivy and related stuff configuration
+* Vertico and related stuff configuration
 #+begin_src emacs-lisp
-  (use-package ivy
-    :diminish
-    :bind (("C-s" . swiper))
-    :config
-    (ivy-mode 1))
+        (use-package vertico
+        :init
+        (vertico-mode))
 
-  (use-package which-key
-    :init (which-key-mode)
-    :diminish which-key-mode
-    :config
-    (setq which-key-idle-delay 1))
+        (use-package orderless
+        :init
+        ;; Configure a custom style dispatcher (see the Consult wiki)
+        ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
+        ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+        (setq completion-styles '(orderless)
+                completion-category-defaults nil
+                completion-category-overrides '((file (styles partial-completion)))))
 
-  (use-package ivy-rich
-    :after ivy
-    :init
-    (ivy-rich-mode 1))
+        ;; Persist history over Emacs restarts. Vertico sorts by history position.
+        (use-package savehist
+        :init
+        (savehist-mode))
 
-  ;; use smex such that recent commands are listed first when hitting M-x
-  (use-package smex)
+        (use-package consult
+        ;; Replace bindings. Lazily loaded due by `use-package'.
+        :bind (;; C-c bindings (mode-specific-map)
+                ("C-c k" . consult-kmacro)
+                ("C-x b" . consult-buffer)
+                ("C-s" . consult-line))
 
-  (use-package counsel
-    :bind (("M-x" . counsel-M-x)
-           ("C-x b" . counsel-switch-buffer)
-           ("C-x C-f" . counsel-find-file)
-           ("C-x C-r" . counsel-recentf)
-           :map minibuffer-local-map
-           ("C-r" . 'counsel-minibuffer-history)))
+        ;; Enable automatic preview at point in the *Completions* buffer. This is
+        ;; relevant when you use the default completion UI. You may want to also
+        ;; enable `consult-preview-at-point-mode` in Embark Collect buffers.
+        :hook (completion-list-mode . consult-preview-at-point-mode)
 
-  (use-package helpful
-    :custom
-    (counsel-describe-function-function #'helpful-callable)
-    (counsel-describe-variable-function #'helpful-variable)
-    :bind
-    ([remap describe-function] . counsel-describe-function)
-    ([remap describe-command] . helpful-command)
-    ([remap describe-variable] . counsel-describe-variable)
-    ([remap describe-key] . helpful-key))
+        :init
+        (recentf-mode))
+
+        ;; Enable richer annotations using the Marginalia package
+        (use-package marginalia
+        ;; Either bind `marginalia-cycle` globally or only in the minibuffer
+        :bind (("M-A" . marginalia-cycle)
+                :map minibuffer-local-map
+                ("M-A" . marginalia-cycle))
+
+        ;; The :init configuration is always executed (Not lazy!)
+        :init
+        ;; Must be in the :init section of use-package such that the mode gets
+        ;; enabled right away. Note that this forces loading the package.
+        (marginalia-mode))
+            (use-package which-key
+            :init (which-key-mode)
+            :diminish which-key-mode
+            :config
+            (setq which-key-idle-delay 1))
+
+      (use-package embark
+         :bind
+         ("M-o" . embark-act))
+
+        (use-package helpful
+          :bind
+          ("C-h f" . #'helpful-callable)
+          ("C-h v" . #'helpful-variable)
+          ("C-h k" . #'helpful-key)
+          ("H-h" . #'helpful-at-point))
+
+      (use-package avy
+        :config
+        (global-set-key (kbd "C-a") 'avy-goto-char-timer))
 #+end_src
 * Key binding configuration
 #+begin_src emacs-lisp
@@ -478,16 +506,6 @@
 
   (use-package org-tree-slide
     :defer t)
-
-  (use-package khalel
-    :config
-    (setq khalel-khal-command "~/.local/bin/khal")
-    (setq khalel-vdirsyncer-command "vdirsyncer")
-    (setq khalel-default-calendar "ncpersonal")
-    (setq khalel-capture-key "e")
-    (setq khalel-import-org-file (concat org-directory "/calendar.org"))
-    (setq khalel-import-time-delta "30d")
-    (khalel-add-capture-template))
 #+end_src
 
 * Org roam
@@ -522,10 +540,6 @@
     (when (file-directory-p "~/Software")
       (setq projectile-project-search-path '("~/Software")))
     (setq projectile-switch-project-action #'projectile-dired))
-
-  (use-package counsel-projectile
-    :after projectile
-    :config (counsel-projectile-mode))
 
   (use-package projectile-ripgrep
     :after projectile)

@@ -103,43 +103,71 @@
   :config
   (setq auth-sources '(password-store)))
 
-(use-package ivy
-  :diminish
-  :bind (("C-s" . swiper))
-  :config
-  (ivy-mode 1))
-
-(use-package which-key
-  :init (which-key-mode)
-  :diminish which-key-mode
-  :config
-  (setq which-key-idle-delay 1))
-
-(use-package ivy-rich
-  :after ivy
+(use-package vertico
   :init
-  (ivy-rich-mode 1))
+  (vertico-mode))
 
-;; use smex such that recent commands are listed first when hitting M-x
-(use-package smex)
+  (use-package orderless
+  :init
+  ;; Configure a custom style dispatcher (see the Consult wiki)
+  ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
+  ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+  (setq completion-styles '(orderless)
+          completion-category-defaults nil
+          completion-category-overrides '((file (styles partial-completion)))))
 
-(use-package counsel
-  :bind (("M-x" . counsel-M-x)
-         ("C-x b" . counsel-switch-buffer)
-         ("C-x C-f" . counsel-find-file)
-         ("C-x C-r" . counsel-recentf)
-         :map minibuffer-local-map
-         ("C-r" . 'counsel-minibuffer-history)))
+  ;; Persist history over Emacs restarts. Vertico sorts by history position.
+  (use-package savehist
+  :init
+  (savehist-mode))
 
-(use-package helpful
-  :custom
-  (counsel-describe-function-function #'helpful-callable)
-  (counsel-describe-variable-function #'helpful-variable)
-  :bind
-  ([remap describe-function] . counsel-describe-function)
-  ([remap describe-command] . helpful-command)
-  ([remap describe-variable] . counsel-describe-variable)
-  ([remap describe-key] . helpful-key))
+  (use-package consult
+  ;; Replace bindings. Lazily loaded due by `use-package'.
+  :bind (;; C-c bindings (mode-specific-map)
+          ("C-c k" . consult-kmacro)
+          ("C-x b" . consult-buffer)
+          ("C-s" . consult-line))
+
+  ;; Enable automatic preview at point in the *Completions* buffer. This is
+  ;; relevant when you use the default completion UI. You may want to also
+  ;; enable `consult-preview-at-point-mode` in Embark Collect buffers.
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+
+  :init
+  (recentf-mode))
+
+  ;; Enable richer annotations using the Marginalia package
+  (use-package marginalia
+  ;; Either bind `marginalia-cycle` globally or only in the minibuffer
+  :bind (("M-A" . marginalia-cycle)
+          :map minibuffer-local-map
+          ("M-A" . marginalia-cycle))
+
+  ;; The :init configuration is always executed (Not lazy!)
+  :init
+  ;; Must be in the :init section of use-package such that the mode gets
+  ;; enabled right away. Note that this forces loading the package.
+  (marginalia-mode))
+      (use-package which-key
+      :init (which-key-mode)
+      :diminish which-key-mode
+      :config
+      (setq which-key-idle-delay 1))
+
+(use-package embark
+   :bind
+   ("M-o" . embark-act))
+
+  (use-package helpful
+    :bind
+    ("C-h f" . #'helpful-callable)
+    ("C-h v" . #'helpful-variable)
+    ("C-h k" . #'helpful-key)
+    ("H-h" . #'helpful-at-point))
+
+(use-package avy
+  :config
+  (global-set-key (kbd "C-a") 'avy-goto-char-timer))
 
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -450,16 +478,6 @@
 (use-package org-tree-slide
   :defer t)
 
-(use-package khalel
-  :config
-  (setq khalel-khal-command "~/.local/bin/khal")
-  (setq khalel-vdirsyncer-command "vdirsyncer")
-  (setq khalel-default-calendar "ncpersonal")
-  (setq khalel-capture-key "e")
-  (setq khalel-import-org-file (concat org-directory "/calendar.org"))
-  (setq khalel-import-time-delta "30d")
-  (khalel-add-capture-template))
-
 (use-package org-roam
     :if (acemacs/is-orbi)
 ;;    :hook
@@ -487,10 +505,6 @@
   (when (file-directory-p "~/Software")
     (setq projectile-project-search-path '("~/Software")))
   (setq projectile-switch-project-action #'projectile-dired))
-
-(use-package counsel-projectile
-  :after projectile
-  :config (counsel-projectile-mode))
 
 (use-package projectile-ripgrep
   :after projectile)
@@ -633,6 +647,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(embark yasnippet-snippets yaml-mode which-key vterm vertico use-package tikz smex rainbow-delimiters pyenv-mode projectile-ripgrep pdf-tools org-tree-slide org-roam-server org-bullets orderless memoize matlab-mode marginalia julia-repl julia-mode ivy-bibtex htmlize helpful format-all forge flycheck exec-path-from-shell evil-magit evil-collection emacsql-sqlite3 elpy ein eglot doom-themes doom-modeline dired-single dired-hide-dotfiles dash-functional csv-mode counsel-projectile consult company-lua company-box company-bibtex company-auctex command-log-mode cmake-mode avy auto-dim-other-buffers async all-the-icons-dired))
  '(safe-local-variable-values '((buffer-read-only . 1))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
