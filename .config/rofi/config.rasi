@@ -3,4 +3,4 @@ configuration {
 	ssh-command: "{terminal} -e "{ssh-client} {host}"";
 	parse-known-hosts: false;
 }
-@theme "/usr/share/rofi/themes/purple.rasi"
+@theme "purple"
