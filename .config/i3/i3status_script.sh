@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # shell scipt to prepend i3status with more stuff
 i3status --config ~/.config/i3status/config | while :

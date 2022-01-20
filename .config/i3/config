@@ -41,7 +41,7 @@ client.background       #F8F8F2
 floating_modifier $mod
 
 # start a terminal
-set $TERMINAL alacritty
+# set $TERMINAL alacritty
 bindsym $mod+Return exec i3-sensible-terminal
 
 # kill focused window
@@ -202,7 +202,7 @@ bar {
     binding_mode       #FF5555 #FF5555 #F8F8F2
   }
         status_command ~/.config/i3/i3status_script.sh
-	font pango:Iosevka Aile , file-icons 11
+	font pango:Iosevka Aile , fontawesome, file-icons 11
 }
 
 
@@ -214,7 +214,7 @@ assign [class="TelegramDesktop"] $workspace4
 assign [class="zoom"] $workspace4
 assign [class="discord"] $workspace4
 assign [class="Signal"] $workspace4
-assign [class="firefox"] $workspace2
+assign [window_role="browser"] $workspace2
 assign [class="Thunderbird"] $workspace3
 assign [class="MATLAB R2019b - academic use"] $workspace5
 assign [class="lyx"] $workspace6
