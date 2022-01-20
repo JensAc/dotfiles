@@ -4,14 +4,9 @@
 
 * Some general purpose functions
 #+begin_src emacs-lisp
-    ;; define function for checking whether we're running on any im
-    (defun acemacs/is-im ()
-        "Check whether we are on any im."
-        (if (string-match "im.*" (system-name)) t nil))
-
-    (defun acemacs/is-orbi ()
-        "Check whether we are on orbi."
-        (if (string-match "orbi" (system-name)) t nil))
+    (defun acemacs/is-orbi-or-nunc ()
+        "Check whether we are on orbi or on nunc."
+        (if (string-match (system-name) "orbi\|nunc") t nil))
 
   ;; show every 30 minutes the events of the next 31 minutes from the calendar
  (defun acemacs/events ()
@@ -55,8 +50,6 @@
   (defvar acemacs/font-fixed-pitch "Iosevka")
   (defvar acemacs/font-variable-pitch "Iosevka Aile")
 
-  (if (acemacs/is-im) (setq acemacs/font "DejaVu Sans Mono" acemacs/font-fixed-pitch "DejaVu Sans"))
-
   (set-face-attribute 'default nil :font acemacs/font :height acemacs/default-font-size)
 
   ;; Set the fixed pitch face
@@ -83,7 +76,7 @@
 
   (use-package doom-themes
     :init
-    (if (acemacs/is-orbi) (load-theme 'doom-dracula t) (load-theme 'doom-solarized-light t)))
+    (if (acemacs/is-orbi-or-nunc) (load-theme 'doom-dracula t) (load-theme 'doom-solarized-light t)))
 
   (use-package rainbow-delimiters
     :hook (prog-mode . rainbow-delimiters-mode))
@@ -259,11 +252,14 @@
 * Email / mu4e
 #+begin_src emacs-lisp
         (use-package mu4e
-          :if (acemacs/is-orbi)
+          :if (acemacs/is-orbi-or-nunc)
           :commands mu4e
           :defer t
           :ensure nil
           :config
+	    (make-directory "~/email/posteo" t)
+	    (make-directory "~/email/ient" t)
+	    (make-directory "~/email/rwth" t)
           (setq message-send-mail-function 'smtpmail-send-it)
           (setq	user-full-name "Jens Schneider" )
           (setq mu4e-contexts
@@ -413,7 +409,7 @@
               (format-time-string "%Y-%m-%d" (org-publish-find-date entry project))))
 
   (use-package org
-    :if (acemacs/is-orbi)
+    :if (acemacs/is-orbi-or-nunc)
     :hook
     (org-mode . acemacs/org-mode-setup)
     (org-agenda-mode . acemacs/agenda-hook)
@@ -522,7 +518,7 @@
 * Org roam
 #+begin_src emacs-lisp
     (use-package org-roam
-      :if (acemacs/is-orbi)
+      :if (acemacs/is-orbi-or-nunc)
   ;;    :hook
     ;;  (after-init . org-roam-mode)
       :config
@@ -646,22 +642,13 @@
 
     ;; ivy bibtex
     (use-package ivy-bibtex
-      :if (acemacs/is-orbi)
+      :if (acemacs/is-orbi-or-nunc)
       :commands
       (ivy-bibtex)
       :custom
       (bibtex-completion-bibliography "~/Documents/diss/references.bib"))
   ;; tikz
 (use-package tikz)
-#+end_src
-** Matlab
-#+begin_src emacs-lisp
-  (use-package matlab
-    :if (acemacs/is-orbi)
-    :defer t
-    :ensure matlab-mode
-    :config
-    (setq matlab-shell-command "/home/urbi/Software/Matlab2019a/bin/matlab"))
 #+end_src
 ** Lua
 Use lua5.3 for now, as e.g. the "see" package works only for lua5.3
@@ -675,6 +662,12 @@ Use lua5.3 for now, as e.g. the "see" package works only for lua5.3
     (setq lua-default-application "lua5.3")
     )
 #+end_src
+** Nix 
+#+begin_src emacs-lips 
+  (use-package nix-mode
+  :mode "\\.nix\\'")
+#+end_src emacs-lisp
+
 
 * Completion and snippets
 #+begin_src emacs-lisp
@@ -700,7 +693,7 @@ Use lua5.3 for now, as e.g. the "see" package works only for lua5.3
     (global-set-key (kbd "TAB") #'company-indent-or-complete-common))
 
   (use-package company-bibtex
-    :if (acemacs/is-orbi)
+    :if (acemacs/is-orbi-or-nunc)
     :after company
     :config
     (setq company-bibtex-bibliography "/home/urbi/Documents/diss/references.bib")
