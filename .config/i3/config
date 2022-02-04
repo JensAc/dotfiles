@@ -227,13 +227,11 @@ assign [title="RD Plot"] $workspace8
 
 
 # Locking script shortcut
-bindsym Control+Shift+l exec "pkill -SIGHUP gpg-agent && i3lock"
+bindsym Control+Shift+l exec "pkill --signal SIGHUP gpg-agent & i3lock"
 
 
 # launch some application at startup
 exec --no-startup-id "pasystray"
-#exec --no-startup-id "thunderbird"
-exec --no-startup-id "mattermost-desktop --disable-gpu "
 exec --no-startup-id "slack --disable-gpu "
 exec --no-startup-id "telegram-desktop"
 exec --no-startup-id "signal-desktop --start-in-tray"
