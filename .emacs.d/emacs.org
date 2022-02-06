@@ -4,14 +4,37 @@
 
 * Some general purpose functions
 #+begin_src emacs-lisp
-    (defun acemacs/is-orbi-or-nunc ()
-        "Check whether we are on orbi or on nunc."
-        (if (string-match (system-name) "orbi\|nunc") t nil))
+     (defun acemacs/is-nunc ()
+         "Check whether we are on on nunc."
+         (if (string-match (system-name) "nunc") t nil))
 
-  ;; show every 30 minutes the events of the next 31 minutes from the calendar
- (defun acemacs/events ()
-   (shell-command "bash -c 'notify-send -t 5000 -u low \"$(khal list -d institut --format \"{start-time} : {title}\" now 31m)\"'"))
- (run-with-timer 0  (* 30 60) 'acemacs/events)
+   ;; show every 30 minutes the events of the next 31 minutes from the calendar
+  ;; (defun acemacs/events ()
+  ;;   (shell-command "bash -c 'notify-send -t 5000 -u low \"$(khal list -d institut --format \"{start-time} : {title}\" now 31m)\"'"))
+  ;; (run-with-timer 0  (* 30 60) 'acemacs/events)
+#+end_src
+
+* Package management
+ #+begin_src emacs-lisp
+;; Initialize package sources
+(require 'package)
+
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")))
+
+(package-initialize)
+(unless package-archive-contents
+ (package-refresh-contents))
+
+;; Initialize use-package on non-Linux platforms
+(unless (package-installed-p 'use-package)
+   (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
+;; debug load time of packages
+;;(setq use-package-compute-statistics t)
 #+end_src
 
 * Basic UI configuration
@@ -21,7 +44,7 @@
   (global-unset-key (kbd "C-x C-c"))
 
   ;; You will most likely need to adjust this font size for your system!
-  (defvar acemacs/default-font-size 120)
+  (defvar acemacs/default-font-size 140)
 
   (setq inhibit-startup-message t)
 
@@ -76,33 +99,10 @@
 
   (use-package doom-themes
     :init
-    (if (acemacs/is-orbi-or-nunc) (load-theme 'doom-dracula t) (load-theme 'doom-solarized-light t)))
+    (load-theme 'doom-dracula t))
 
   (use-package rainbow-delimiters
     :hook (prog-mode . rainbow-delimiters-mode))
-#+end_src
-
-* Package management
- #+begin_src emacs-lisp
-;; Initialize package sources
-(require 'package)
-
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("org" . "https://orgmode.org/elpa/")
-                         ("elpa" . "https://elpa.gnu.org/packages/")))
-
-(package-initialize)
-(unless package-archive-contents
- (package-refresh-contents))
-
-;; Initialize use-package on non-Linux platforms
-(unless (package-installed-p 'use-package)
-   (package-install 'use-package))
-
-(require 'use-package)
-(setq use-package-always-ensure t)
-;; debug load time of packages
-;;(setq use-package-compute-statistics t)
 #+end_src
 
 * Auth source
@@ -189,6 +189,10 @@
   (global-set-key (kbd "C-c a") 'org-agenda)
   (global-set-key (kbd "C-c c") 'org-capture)
 
+  (use-package undo-tree
+    :init
+    (global-undo-tree-mode))
+
   ;; evil config
   (use-package evil
     :init
@@ -197,7 +201,7 @@
     (setq evil-want-C-i-jump nil)
     (setq evil-want-fine-undo t)
     :custom
-    (evil-undo-system 'undo-redo)
+    (evil-undo-system 'undo-tree)
     :config
     (evil-mode 1)
 
@@ -252,14 +256,13 @@
 * Email / mu4e
 #+begin_src emacs-lisp
         (use-package mu4e
-          :if (acemacs/is-orbi-or-nunc)
           :commands mu4e
           :defer t
           :ensure nil
           :config
-	    (make-directory "~/email/posteo" t)
-	    (make-directory "~/email/ient" t)
-	    (make-directory "~/email/rwth" t)
+            (make-directory "~/email/posteo" t)
+            (make-directory "~/email/ient" t)
+            (make-directory "~/email/rwth" t)
           (setq message-send-mail-function 'smtpmail-send-it)
           (setq	user-full-name "Jens Schneider" )
           (setq mu4e-contexts
@@ -287,6 +290,38 @@
                                                           ("/posteo/Archive" . ?a)
                                                           ("/posteo/Trash"   . ?t)
                                                           ("/posteo/Drafts"   . ?d) ))))
+                ,(if (acemacs/is-nunc) (make-mu4e-context
+                     :name "23Tec"
+                     :enter-func (lambda () (mu4e-message "Entering 23Tec context"))
+                     :leave-func (lambda () (mu4e-message "Leaving 23Tec context"))
+                     ;; we match based on the contact-fields of the message
+                     :match-func (lambda (msg)
+                                   (when msg
+                                     (mu4e-message-contact-field-matches msg
+                                                                         :to "schneider@23technologies.cloud")))
+                     :vars '( ( user-mail-address	   . "schneider@23technologies.cloud"  )
+                              ( mu4e-compose-signature-auto-include . nil)
+                              ( mu4e-compose-signature . "Jens Schneider
+DevOps Engineer\n
+Mail: schneider@23technologies.cloud 
+Web: https://23technologies.cloud\n
+23 Technologies GmbH
+Teckstraße 62 / 70190 Stuttgart / Deutschland\n
+Geschäftsführer: Christian Berendt
+Unternehmenssitz: Stuttgart
+Amtsgericht: Stuttgart, HRB 776151")
+                              ( mu4e-sent-folder      . "/23Tec/Sent" )
+                              ( mu4e-trash-folder     . "/23Tec/Trash" )
+                              ( mu4e-drafts-folder    . "/23Tec/Drafts" )
+                              ( mu4e-refile-folder    . "/23Tec/Archive" )
+                              ( smtpmail-smtp-user    . "schneider@23technologies.cloud" )
+                              ( smtpmail-smtp-server  . "mail@your-server.de")
+                              ( smtpmail-smtp-service . 587)
+                              (mu4e-maildir-shortcuts . ( ("/23Tec/Inbox"   . ?i)
+                                                          ("/23Tec/Sent"    . ?s)
+                                                          ("/23Tec/Archive" . ?a)
+                                                          ("/23Tec/Trash"   . ?t)
+                                                          ("/23Tec/Drafts"   . ?d) ))))
                    ,(make-mu4e-context
                      :name "Rwth"
                      :enter-func (lambda () (mu4e-message "Entering Rwth context"))
@@ -308,7 +343,7 @@
                                                           ("/rwth/Sent Items"    . ?s)
                                                           ("/rwth/Archive"       . ?a)
                                                           ("/rwth/Deleted Items" . ?t)
-                                                          ("/rwth/Drafts"         . ?d) ))))
+                                                          ("/rwth/Drafts"         . ?d) )))))
                    ,(make-mu4e-context
                      :name "Ient"
                      :enter-func (lambda () (mu4e-message "Entering Ient context"))
@@ -342,7 +377,7 @@
                                                           ("/ient/Drafts"         . ?d) ))))
                    ))
           ;; work with mbsync
-          (setq mu4e-get-mail-command "mbsync -a")
+          (if (acemacs/is-nunc) (setq mu4e-get-mail-command "mbsync 23Tec posteo") (setq mu4e-get-mail-command "mbsync posteo ient rwth"))
           (setq mu4e-change-filenames-when-moving t)
 
           ;; don't keep message buffers around
@@ -409,7 +444,6 @@
               (format-time-string "%Y-%m-%d" (org-publish-find-date entry project))))
 
   (use-package org
-    :if (acemacs/is-orbi-or-nunc)
     :hook
     (org-mode . acemacs/org-mode-setup)
     (org-agenda-mode . acemacs/agenda-hook)
@@ -511,6 +545,9 @@
 
   (use-package htmlize)
 
+  (use-package org-download
+  :after org)
+
   (use-package org-tree-slide
     :defer t)
 #+end_src
@@ -518,7 +555,6 @@
 * Org roam
 #+begin_src emacs-lisp
     (use-package org-roam
-      :if (acemacs/is-orbi-or-nunc)
   ;;    :hook
     ;;  (after-init . org-roam-mode)
       :config
@@ -642,7 +678,6 @@
 
     ;; ivy bibtex
     (use-package ivy-bibtex
-      :if (acemacs/is-orbi-or-nunc)
       :commands
       (ivy-bibtex)
       :custom
@@ -663,10 +698,14 @@ Use lua5.3 for now, as e.g. the "see" package works only for lua5.3
     )
 #+end_src
 ** Nix 
-#+begin_src emacs-lips 
+#+begin_src emacs-lisp
   (use-package nix-mode
   :mode "\\.nix\\'")
 #+end_src emacs-lisp
+** Formatting 
+#+begin_src emacs-lisp
+(use-package format-all)
+#+end_src
 
 
 * Completion and snippets
@@ -693,7 +732,6 @@ Use lua5.3 for now, as e.g. the "see" package works only for lua5.3
     (global-set-key (kbd "TAB") #'company-indent-or-complete-common))
 
   (use-package company-bibtex
-    :if (acemacs/is-orbi-or-nunc)
     :after company
     :config
     (setq company-bibtex-bibliography "/home/urbi/Documents/diss/references.bib")
