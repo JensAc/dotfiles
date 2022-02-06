@@ -18,6 +18,30 @@ Far :posteo-remote:
 Near :posteo-local:
 Patterns *
 Create Both
+Expunge Both
+SyncState *
+
+IMAPAccount 23Tec
+Host mail.your-server.de
+User schneider@23technologies.cloud
+PassCmd "pass 23Tec/mail | head -n1"
+SSLType IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore 23Tec-remote
+Account 23Tec
+
+MaildirStore 23Tec-local
+Subfolders Verbatim
+Path ~/email/23Tec/
+Inbox ~/email/23Tec/Inbox
+
+Channel 23Tec
+Far :23Tec-remote:
+Near :23Tec-local:
+Patterns *
+Create Both
+Expunge Both
 SyncState *
 
 IMAPAccount ient
@@ -41,6 +65,7 @@ Far :ient-remote:
 Near :ient-local:
 Patterns *
 Create Both
+Expunge Both
 SyncState *
 
 IMAPAccount rwth
@@ -64,4 +89,5 @@ Far :rwth-remote:
 Near :rwth-local:
 Patterns *
 Create Both
+Expunge Both
 SyncState *
