@@ -321,7 +321,7 @@ Amtsgericht: Stuttgart, HRB 776151")
                                                           ("/23Tec/Sent"    . ?s)
                                                           ("/23Tec/Archive" . ?a)
                                                           ("/23Tec/Trash"   . ?t)
-                                                          ("/23Tec/Drafts"   . ?d) ))))
+                                                          ("/23Tec/Drafts"   . ?d) )))))
                    ,(make-mu4e-context
                      :name "Rwth"
                      :enter-func (lambda () (mu4e-message "Entering Rwth context"))
@@ -343,7 +343,7 @@ Amtsgericht: Stuttgart, HRB 776151")
                                                           ("/rwth/Sent Items"    . ?s)
                                                           ("/rwth/Archive"       . ?a)
                                                           ("/rwth/Deleted Items" . ?t)
-                                                          ("/rwth/Drafts"         . ?d) )))))
+                                                          ("/rwth/Drafts"         . ?d) ))))
                    ,(make-mu4e-context
                      :name "Ient"
                      :enter-func (lambda () (mu4e-message "Entering Ient context"))
