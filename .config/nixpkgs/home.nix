@@ -9,11 +9,22 @@
     xdg.userDirs.enable = true;
     xdg.userDirs.createDirectories = true;
 
-    systemd.user.sessionVariables = {
-      EDITOR = "vim";
+    home.sessionVariables  = {
+      EDITOR = "emacsclient";
     };
 
-    # configure my favorite cursor theme
+    imports = [ modules/fusuma.nix ];
+    
+    # configure my favorite themes
+    gtk = {
+      enable = true;
+      theme.name = "Adwaita-dark";
+      iconTheme = {
+        name = "Luna-Dark";
+        package = pkgs.luna-icons;
+      };
+      gtk3.extraConfig = { gtk-cursor-theme-name="Bibata-Modern-Classic";};
+    };
     xsession = {
       enable = true;
       pointerCursor = {
@@ -31,7 +42,11 @@
         mu.enable = true;
         address = "jens.schneider.ac@posteo.de";
       };
-      accounts.ient= {
+      accounts."23Tec" = {
+        mu.enable = true;
+        address = "schneider@23technologies.cloud";
+      };
+      accounts.ient = {
         mu.enable = true;
         address = "schneider@ient.rwth-aachen.de";
       };
@@ -52,7 +67,7 @@
       };
       oh-my-zsh = {
         enable = true;
-        plugins = [ "git" "pass" "systemd" ];
+        plugins = [ "git" "pass" "systemd" "kubectl" ];
         theme = "robbyrussell";
       };
     };
@@ -62,7 +77,6 @@
 
     # get some packages
     home.packages = with pkgs; [
-      alacritty
       gnupg
       pass
       iosevka-bin
@@ -81,12 +95,32 @@
       lua53Packages.digestif
       xarchiver
       htop
-      luna-icons
       xfce.thunar
+      xfce.thunar-volman
+      grsync
+      gnome.gnome-disk-utility
+      gnome.gnome-keyring
       lxappearance
       libnotify
       rnix-lsp
+      xorg.xev
+      xorg.xmodmap
+      xdotool
+      xclip
+      nix-index
+      slack
+      ispell
+      feh
+      xournalpp
+      teams
+      ripgrep
+      kubectl
+      gcc
+      k9s
+      fluxcd
+      nodePackages.prettier
     ];
+    
 
     # i3 related dotfiles
     home.file.".config/i3/config".source =~/dotfiles/.config/i3/config;
@@ -106,17 +140,35 @@
     home.file.".mbsyncrc".source =~/dotfiles/.mbsyncrc;
   
     # vdirsyncer
-    # home.file.".config/vdirsyncer/config".source =~/dotfiles/.config/vdirsyncer/config;
+    home.file.".config/vdirsyncer/config".source =~/dotfiles/.config/vdirsyncer/config;
+    home.file.".config/vdirsyncer/getpwnc.sh".source =~/dotfiles/.config/vdirsyncer/getpwnc.sh;
+    home.file.".config/vdirsyncer/getpwnc_tvv.sh".source =~/dotfiles/.config/vdirsyncer/getpwnc_tvv.sh;
+    home.file.".config/vdirsyncer/getpwnc_23.sh".source =~/dotfiles/.config/vdirsyncer/getpwnc_23.sh;
     # imports = [
     #   ~/vdirsyncer.nix
     # ];
     # services.vdirsyncer.enable = true;
 
+    # khal
+    home.file.".config/khal/config".source =~/dotfiles/.config/khal/config;
+
+    home.file.".config/fusuma/config.yml".source =~/dotfiles/.config/fusuma/config.yml;
+    services.fusuma.enable = true;
+    
+    home.file.".Xmodmap".source =~/dotfiles/.Xmodmap;
+
     services.nextcloud-client.enable = true;
+    services.syncthing.enable = true;
     services.network-manager-applet.enable = true;
     services.pasystray.enable = true;
     services.dunst.enable = true;
-    services.gpg-agent.enable = true;
+
+    services.gpg-agent = {
+      enable = true;
+      defaultCacheTtl = 25000;
+      maxCacheTtl = 25000;
+    };
+
     services.redshift = {
       enable = true;
       tray = true;
