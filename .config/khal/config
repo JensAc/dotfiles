@@ -1,13 +1,8 @@
 [calendars]
 
-  [[ient]]
-    path = ~/calendars/ient/calendar
+  [[23T personal]]
+    path = ~/calendars/23Tec/personal
     color = dark blue
-
-  [[institut]]
-    path = ~/calendars/institut/calendar
-    color = dark green
-    readonly = True
 
   [[ncpersonal]]
     path = ~/calendars/nextcloud/personal

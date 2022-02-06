@@ -2,40 +2,22 @@
 # A folder where vdirsyncer can store some metadata about each pair.
 status_path = "~/.vdirsyncer/status/"
 
-[pair ient]
-a = "ient_local"
-b = "ient_remote"
+[pair 23T]
+a = "23T_local"
+b = "23T_remote"
 collections = ["from a", "from b"]
 metadata = ["color"]
 
-[storage ient_local]
+[storage 23T_local]
 type = "filesystem"
-path = "~/calendars/ient"
+path = "~/calendars/23Tec"
 fileext = ".ics"
 
-[storage ient_remote]
+[storage 23T_remote]
 type = "caldav"
-url = "http://localhost:1080/users/schneider@ient.rwth-aachen.de/calendar"
-username = "js199426@ient.rwth-aachen.de"
-password.fetch = ["command", "pass", "mail/js199426@ient.rwth-aachen.de@mail.rwth-aachen.de"]
-
-[pair institut]
-a = "institut_local"
-b = "institut_remote"
-collections = ["from a", "from b"]
-metadata = ["color"]
-
-[storage institut_local]
-type = "filesystem"
-path = "~/calendars/institut"
-fileext = ".ics"
-
-[storage institut_remote]
-type = "caldav"
-url = "http://localhost:1080/users/institut@ient.rwth-aachen.de/calendar"
-username = "js199426@ient.rwth-aachen.de"
-password.fetch = ["command", "pass", "mail/js199426@ient.rwth-aachen.de@mail.rwth-aachen.de"]
-
+url = "https://nextcloud.23technologies.cloud/"
+username = "schneider"
+password.fetch = ["command", "~/.config/vdirsyncer/getpwnc_23.sh"]
 
 
 [pair nextcloud]
