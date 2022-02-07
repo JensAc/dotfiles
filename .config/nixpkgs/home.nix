@@ -119,6 +119,7 @@
       k9s
       fluxcd
       nodePackages.prettier
+      signal-desktop
     ];
     
 
