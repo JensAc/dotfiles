@@ -302,7 +302,7 @@
                      :vars '( ( user-mail-address	   . "schneider@23technologies.cloud"  )
                               ( mu4e-compose-signature-auto-include . nil)
                               ( mu4e-compose-signature . "Jens Schneider
-DevOps Engineer\n
+Software Engineer\n
 Mail: schneider@23technologies.cloud 
 Web: https://23technologies.cloud\n
 23 Technologies GmbH
