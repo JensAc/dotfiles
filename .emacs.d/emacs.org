@@ -567,7 +567,7 @@ Amtsgericht: Stuttgart, HRB 776151")
       (   (("C-c n l" . org-roam-buffer-toggle)
            ("C-c n f" . org-roam-node-find)
            ("C-c n g" . org-roam-graph)
-           ("C-c n i" . org-roam-insert)
+           ("C-c n i" . org-roam-node-insert)
            ("C-c n I" . org-roam-insert-immediate))))
 
     (use-package org-roam-ui
@@ -705,6 +705,36 @@ Use lua5.3 for now, as e.g. the "see" package works only for lua5.3
 ** Formatting 
 #+begin_src emacs-lisp
 (use-package format-all)
+#+end_src
+** Vterm
+#+begin_src emacs-lisp
+  (use-package vterm
+     :config
+     ;; see https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute_it/
+     ;; sh-send-line-or-region-and-step
+     (defun acemacs/vterm-execute-current-line ()
+        "Insert text of current line in vterm and execute."
+        (interactive)
+        (let (from to end)
+            (if (use-region-p)
+                (setq from (region-beginning)
+                    to (region-end)
+                    end to)
+            (setq from (line-beginning-position)
+                    to (line-end-position)
+                    end (1+ to)))
+            (setq command (buffer-substring from to))
+            (let ((buf (current-buffer)))
+            (unless (get-buffer vterm-buffer-name)
+                (vterm))
+            (display-buffer vterm-buffer-name t)
+            (switch-to-buffer-other-window vterm-buffer-name)
+            (vterm--goto-line -1)
+            (vterm-send-string command t)
+            (vterm-send-return)
+            (switch-to-buffer-other-window buf)
+            )))
+      :bind (:map sh-mode-map ("C-c C-n" . acemacs/vterm-execute-current-line)))
 #+end_src
 
 
