@@ -1,5 +1,9 @@
 [calendars]
 
+  [[23T generic]]
+    path = ~/calendars/23Tec/public_shared_by_berendt
+    color = dark green
+
   [[23T personal]]
     path = ~/calendars/23Tec/personal
     color = dark blue
