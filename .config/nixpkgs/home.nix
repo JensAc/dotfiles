@@ -99,7 +99,6 @@
       xfce.thunar-volman
       grsync
       gnome.gnome-disk-utility
-      gnome.gnome-keyring
       lxappearance
       libnotify
       rnix-lsp
@@ -120,6 +119,22 @@
       fluxcd
       nodePackages.prettier
       signal-desktop
+      lxqt.screengrab
+      dig
+      nodePackages.yaml-language-server
+      minio-client
+      bc
+      openssl
+      kubeval
+      hunspellDicts.de_DE
+      kubernetes-helm
+      libsForQt5.qtkeychain
+      libsecret
+      gimp
+      cmake
+      gnumake
+      libtool
+      libvterm-neovim
     ];
     
 
