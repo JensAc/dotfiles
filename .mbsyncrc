@@ -24,7 +24,7 @@ SyncState *
 IMAPAccount 23Tec
 Host mail.your-server.de
 User schneider@23technologies.cloud
-PassCmd "pass 23Tec/mail | head -n1"
+PassCmd "pass 23Tec/schneider@23technologies.cloud@mail.your-server.de | head -n1"
 SSLType IMAPS
 CertificateFile /etc/ssl/certs/ca-certificates.crt
 
