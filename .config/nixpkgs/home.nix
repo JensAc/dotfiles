@@ -1,5 +1,8 @@
 { config, pkgs, ... }:
 
+let
+  mach-nix-upstream = import (fetchTarball "https://github.com/DavHau/mach-nix/tarball/3.4.0") {};
+in
 {
     # Home Manager needs a bit of information about you and the
     # paths it should manage.
@@ -81,6 +84,7 @@
       pass
       iosevka-bin
       (iosevka-bin.override { variant = "aile"; })
+      noto-fonts-emoji
       emacs
       rofi
       i3lock
@@ -122,6 +126,7 @@
       lxqt.screengrab
       dig
       nodePackages.yaml-language-server
+      nodePackages.bash-language-server
       minio-client
       bc
       openssl
@@ -135,6 +140,14 @@
       gnumake
       libtool
       libvterm-neovim
+      google-chrome
+      zoom-us
+      python310
+      meld
+      mach-nix-upstream.mach-nix
+      jq
+      nix-prefetch
+      envsubst
     ];
     
 
