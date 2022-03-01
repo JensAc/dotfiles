@@ -266,7 +266,7 @@ bindsym XF86MonBrightnessUp exec xbacklight -inc 20 # increase screen brightness
 bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightness
 
 # wallpaper
-exec feh --bg-tile ~/Pictures/Wallpapers/default.png
+exec feh --bg-fill ~/Pictures/Wallpapers/default.png
 
 # os keymaps
 bindsym Shift+space exec --no-startup-id (setxkbmap -query | grep -q "layout:\s\+de") && (setxkbmap us && xmodmap ~/.Xmodmap && notify-send -t 500 "us") || (setxkbmap de && xmodmap ~/.Xmodmap && notify-send -t 500 "de")
