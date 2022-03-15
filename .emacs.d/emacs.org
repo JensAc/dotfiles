@@ -12,6 +12,7 @@
   ;; (defun acemacs/events ()
   ;;   (shell-command "bash -c 'notify-send -t 5000 -u low \"$(khal list -d institut --format \"{start-time} : {title}\" now 31m)\"'"))
   ;; (run-with-timer 0  (* 30 60) 'acemacs/events)
+
 #+end_src
 
 * Package management
@@ -60,7 +61,7 @@
 
   ;; Disable line numbers for some modes
   (dolist (mode '(org-mode-hook
-		    org-agenda-mode-hook
+                    org-agenda-mode-hook
                   term-mode-hook
                   treemacs-mode-hook
                   shell-mode-hook
@@ -84,6 +85,7 @@
   (column-number-mode)
   (setq display-line-numbers-type 'relative)
   (global-display-line-numbers-mode t)
+  (setq-default tab-width 2)
 
   ;; NOTE: The first time you load your configuration on a new machine, you'll
   ;; need to run the following command interactively so that mode line icons
@@ -114,71 +116,73 @@
 #+end_src
 * Vertico and related stuff configuration
 #+begin_src emacs-lisp
-        (use-package vertico
-        :init
-        (vertico-mode))
+      (use-package vertico
+      :init
+      (vertico-mode))
 
-        (use-package orderless
-        :init
-        ;; Configure a custom style dispatcher (see the Consult wiki)
-        ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
-        ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-        (setq completion-styles '(orderless)
-                completion-category-defaults nil
-                completion-category-overrides '((file (styles partial-completion)))))
+      (use-package orderless
+      :init
+      ;; Configure a custom style dispatcher (see the Consult wiki)
+      ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
+      ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+      (setq completion-styles '(orderless)
+              completion-category-defaults nil
+              completion-category-overrides '((file (styles partial-completion)))))
 
-        ;; Persist history over Emacs restarts. Vertico sorts by history position.
-        (use-package savehist
-        :init
-        (savehist-mode))
+      ;; Persist history over Emacs restarts. Vertico sorts by history position.
+      (use-package savehist
+      :init
+      (savehist-mode))
 
-        (use-package consult
-        ;; Replace bindings. Lazily loaded due by `use-package'.
-        :bind (;; C-c bindings (mode-specific-map)
-                ("C-c k" . consult-kmacro)
-                ("C-x b" . consult-buffer)
-                ("C-s" . consult-line))
+      (use-package consult
+      ;; Replace bindings. Lazily loaded due by `use-package'.
+      :bind (;; C-c bindings (mode-specific-map)
+              ("C-c k" . consult-kmacro)
+              ("C-x b" . consult-buffer)
+              ("C-s" . consult-line)
+              ("C-c i" . consult-imenu))
+	
 
-        ;; Enable automatic preview at point in the *Completions* buffer. This is
-        ;; relevant when you use the default completion UI. You may want to also
-        ;; enable `consult-preview-at-point-mode` in Embark Collect buffers.
-        :hook (completion-list-mode . consult-preview-at-point-mode)
+      ;; Enable automatic preview at point in the *Completions* buffer. This is
+      ;; relevant when you use the default completion UI. You may want to also
+      ;; enable `consult-preview-at-point-mode` in Embark Collect buffers.
+      :hook (completion-list-mode . consult-preview-at-point-mode)
 
-        :init
-        (recentf-mode))
+      :init
+      (recentf-mode))
 
-        ;; Enable richer annotations using the Marginalia package
-        (use-package marginalia
-        ;; Either bind `marginalia-cycle` globally or only in the minibuffer
-        :bind (("M-A" . marginalia-cycle)
-                :map minibuffer-local-map
-                ("M-A" . marginalia-cycle))
+      ;; Enable richer annotations using the Marginalia package
+      (use-package marginalia
+      ;; Either bind `marginalia-cycle` globally or only in the minibuffer
+      :bind (("M-A" . marginalia-cycle)
+              :map minibuffer-local-map
+              ("M-A" . marginalia-cycle))
 
-        ;; The :init configuration is always executed (Not lazy!)
-        :init
-        ;; Must be in the :init section of use-package such that the mode gets
-        ;; enabled right away. Note that this forces loading the package.
-        (marginalia-mode))
-            (use-package which-key
-            :init (which-key-mode)
-            :diminish which-key-mode
-            :config
-            (setq which-key-idle-delay 1))
+      ;; The :init configuration is always executed (Not lazy!)
+      :init
+      ;; Must be in the :init section of use-package such that the mode gets
+      ;; enabled right away. Note that this forces loading the package.
+      (marginalia-mode))
+          (use-package which-key
+          :init (which-key-mode)
+          :diminish which-key-mode
+          :config
+          (setq which-key-idle-delay 1))
 
-      (use-package embark
-         :bind
-         ("M-o" . embark-act))
+    (use-package embark
+       :bind
+       ("M-o" . embark-act))
 
-        (use-package helpful
-          :bind
-          ("C-h f" . #'helpful-callable)
-          ("C-h v" . #'helpful-variable)
-          ("C-h k" . #'helpful-key)
-          ("H-h" . #'helpful-at-point))
+      (use-package helpful
+        :bind
+        ("C-h f" . #'helpful-callable)
+        ("C-h v" . #'helpful-variable)
+        ("C-h k" . #'helpful-key)
+        ("H-h" . #'helpful-at-point))
 
-      (use-package avy
-        :config
-        (global-set-key (kbd "C-a") 'avy-goto-char-timer))
+    (use-package avy
+      :config
+      (global-set-key (kbd "C-a") 'avy-goto-char-timer))
 #+end_src
 * Key binding configuration
 #+begin_src emacs-lisp
@@ -579,7 +583,91 @@
             org-roam-ui-update-on-save t
             org-roam-ui-open-on-start t))
 #+end_src
+* Completion and snippets
+#+begin_src emacs-lisp
+  ;; append yasnippet support as described in the following link
+  ;; https://www.reddit.com/r/emacs/comments/3r9fic/best_practicestip_for_companymode_andor_yasnippet/
+  (defvar company-mode/enable-yas t "Enable yasnippet for all backends.")
+  (defun company-mode/backend-with-yas (backend)
+    (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+        backend
+      (append (if (consp backend) backend (list backend))
+              '(:with company-yasnippet))))
+
+  (use-package company
+    :demand t
+    :bind (:map company-active-map
+                ("<tab>" . company-complete-selection)
+                ("<down>" . company-select-next))
+    :custom
+    (company-minimum-prefix-length 1)
+    (company-idle-delay 0.1)
+    :config
+    ;;    (global-company-mode)
+    (global-set-key (kbd "TAB") #'company-indent-or-complete-common))
+
+;;  (use-package company-bibtex
+;;    :after company
+;;    :config
+;;    (setq company-bibtex-bibliography "/home/urbi/Documents/diss/references.bib")
+;;    (add-to-list 'company-backends 'company-bibtex))
+;;
+;;  (use-package company-lua
+;;    :config
+;;    (add-to-list 'company-backends 'company-lua))
+
+ ;; (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+
+  (use-package company-box
+    :hook (company-mode . company-box-mode))
+
+  ;; snippets and advanced syntax checking
+  (use-package yasnippet
+    :config
+    (yas-global-mode))
+
+  (use-package yasnippet-snippets
+    :after yasnippet)
+#+end_src
 * Programming / Development
+** General
+#+begin_src emacs-lisp
+  (defun base64-encode-region-prefix-arg (&rest _args)
+  "Pass prefix arg as third arg to `base64-encode-region'."
+  (interactive "r\nP"))
+  (advice-add 'base64-encode-region :before #'base64-encode-region-prefix-arg)
+
+  (setq comint-terminfo-terminal "xterm-256color")
+
+  (defun copy-line-path ()
+    (interactive)
+    (kill-new (concat (file-relative-name buffer-file-name (projectile-project-root)) ":" (number-to-string (line-number-at-pos)))))
+
+#+end_src
+** GUD
+#+begin_src emacs-lisp
+  ;; keep it here, however atm I don't like it
+  ;; (defvar gud-overlay
+  ;;   (let* ((ov (make-overlay (point-min) (point-min))))
+  ;;     (overlay-put ov 'face 'secondary-selection)
+  ;;     ov)
+  ;;   "Overlay variable for GUD highlighting.")
+
+  ;; (defadvice gud-display-line (after my-gud-highlight act)
+  ;;   "Highlight current line."
+  ;;   (let* ((ov gud-overlay)
+  ;;          (bf (gud-find-file true-file)))
+  ;;     (with-current-buffer bf
+  ;;       (move-overlay ov (line-beginning-position) (line-beginning-position 2)
+  ;;     ;;(move-overlay ov (line-beginning-position) (line-end-position)
+  ;;                     (current-buffer)))))
+
+  ;; (defun gud-kill-buffer ()
+  ;;   (if (derived-mode-p 'gud-mode)
+  ;;       (delete-overlay gud-overlay)))
+
+  ;; (add-hook 'kill-buffer-hook 'gud-kill-buffer)
+#+end_src
 ** Projectile
 #+begin_src emacs-lisp
   (use-package projectile
@@ -621,8 +709,14 @@
 ** eglot
 #+begin_src emacs-lisp
   (use-package eglot
+    :after company
+    :init
+    (setq-default eglot-workspace-configuration '((:gopls . (:usePlaceholders t))))
     :config
     (add-to-list 'eglot-server-programs '(tex-mode . ("digestif")))
+    ;; this was somehow required when running eglot in some Go projects
+    (setq max-specpdl-size 32000)
+    (setq max-lisp-eval-depth 8000)
     :hook
     ((LaTeX-mode . eglot-ensure)
     (c++-mode . eglot-ensure)
@@ -706,6 +800,11 @@ Use lua5.3 for now, as e.g. the "see" package works only for lua5.3
   (use-package nix-mode
   :mode "\\.nix\\'")
 #+end_src emacs-lisp
+** Go
+#+begin_src emacs-lisp
+ (use-package go-mode) 
+#+end_src
+
 ** Formatting 
 #+begin_src emacs-lisp
 (use-package format-all)
@@ -730,7 +829,7 @@ Use lua5.3 for now, as e.g. the "see" package works only for lua5.3
             (setq command (buffer-substring from to))
             (let ((buf (current-buffer)))
             (unless (get-buffer vterm-buffer-name)
-                (vterm))
+                (vterm-other-window))
             (display-buffer vterm-buffer-name t)
             (switch-to-buffer-other-window vterm-buffer-name)
             (vterm--goto-line -1)
@@ -741,52 +840,6 @@ Use lua5.3 for now, as e.g. the "see" package works only for lua5.3
       :bind (:map sh-mode-map ("C-c C-n" . acemacs/vterm-execute-current-line)))
 #+end_src
 
-
-* Completion and snippets
-#+begin_src emacs-lisp
-  ;; append yasnippet support as described in the following link
-  ;; https://www.reddit.com/r/emacs/comments/3r9fic/best_practicestip_for_companymode_andor_yasnippet/
-  (defvar company-mode/enable-yas t "Enable yasnippet for all backends.")
-  (defun company-mode/backend-with-yas (backend)
-    (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
-        backend
-      (append (if (consp backend) backend (list backend))
-              '(:with company-yasnippet))))
-
-  (use-package company
-    :demand t
-    :bind (:map company-active-map
-                ("<tab>" . company-complete-selection)
-                ("<down>" . company-select-next))
-    :custom
-    (company-minimum-prefix-length 1)
-    (company-idle-delay 0.1)
-    :config
-    ;;    (global-company-mode)
-    (global-set-key (kbd "TAB") #'company-indent-or-complete-common))
-
-  (use-package company-bibtex
-    :after company
-    :config
-    (setq company-bibtex-bibliography "/home/urbi/Documents/diss/references.bib")
-    (add-to-list 'company-backends 'company-bibtex))
-
-  (use-package company-lua
-    :config
-    (add-to-list 'company-backends 'company-lua))
-  (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
-
-  (use-package company-box
-    :hook (company-mode . company-box-mode))
-
-  ;; snippets and advanced syntax checking
-  (use-package yasnippet
-    :config
-    (yas-global-mode))
-
-  (use-package yasnippet-snippets
-    :after yasnippet)
-#+end_src
 * Start server
 #+begin_src emacs-lisp
   (server-start)
