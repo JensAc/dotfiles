@@ -16,8 +16,8 @@ in
       EDITOR = "emacsclient";
     };
 
-    imports = [ modules/fusuma.nix ];
-    
+    imports = [ modules/fusuma.nix modules/vdirsyncer.nix ];
+
     # configure my favorite themes
     gtk = {
       enable = true;
@@ -75,6 +75,7 @@ in
       };
     };
 
+
     # allow font configuration
     fonts.fontconfig.enable = true;
 
@@ -119,6 +120,7 @@ in
       ripgrep
       kubectl
       gcc
+      gdb
       k9s
       fluxcd
       nodePackages.prettier
@@ -147,43 +149,57 @@ in
       mach-nix-upstream.mach-nix
       jq
       nix-prefetch
-      envsubst
+      nmap
+      go_1_17
+      gopls
+      ginkgo
+      delve
+      tmux
+      telnet
+      openvpn
+      ncdu
+      file
+      vscode
+      inkscape
+      userhosts
+      powertop
+      kustomize
     ];
-    
+
 
     # i3 related dotfiles
     home.file.".config/i3/config".source =~/dotfiles/.config/i3/config;
     home.file.".config/i3/i3status_script.sh".source =~/dotfiles/.config/i3/i3status_script.sh;
     home.file.".config/i3status/config".source =~/dotfiles/.config/i3status/config;
-  
+
     # rofi config
     home.file.".config/rofi/config.rasi".source =~/dotfiles/.config/rofi/config.rasi;
-  
+
     # alacritty configuration
     home.file.".config/alacritty/alacritty.yml".source =~/dotfiles/.config/alacritty/alacritty.yml;
-  
+
     # git config
     home.file.".gitconfig".source =~/dotfiles/.gitconfig;
-  
+
+    # pass plugin for firefox (passff)
+    home.file.".mozilla/native-messaging-hosts/passff.json".source = "${pkgs.passff-host}/share/passff-host/passff.json";
+
     # mbsync
     home.file.".mbsyncrc".source =~/dotfiles/.mbsyncrc;
-  
+
     # vdirsyncer
     home.file.".config/vdirsyncer/config".source =~/dotfiles/.config/vdirsyncer/config;
     home.file.".config/vdirsyncer/getpwnc.sh".source =~/dotfiles/.config/vdirsyncer/getpwnc.sh;
     home.file.".config/vdirsyncer/getpwnc_tvv.sh".source =~/dotfiles/.config/vdirsyncer/getpwnc_tvv.sh;
     home.file.".config/vdirsyncer/getpwnc_23.sh".source =~/dotfiles/.config/vdirsyncer/getpwnc_23.sh;
-    # imports = [
-    #   ~/vdirsyncer.nix
-    # ];
-    # services.vdirsyncer.enable = true;
+    services.vdirsyncer.enable = true;
 
     # khal
     home.file.".config/khal/config".source =~/dotfiles/.config/khal/config;
 
     home.file.".config/fusuma/config.yml".source =~/dotfiles/.config/fusuma/config.yml;
     services.fusuma.enable = true;
-    
+
     home.file.".Xmodmap".source =~/dotfiles/.Xmodmap;
 
     services.nextcloud-client.enable = true;
