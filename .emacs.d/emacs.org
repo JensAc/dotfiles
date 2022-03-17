@@ -631,11 +631,20 @@
 ** General
 #+begin_src emacs-lisp
   (defun base64-encode-region-prefix-arg (&rest _args)
-  "Pass prefix arg as third arg to `base64-encode-region'."
-  (interactive "r\nP"))
+    "Pass prefix arg as third arg to `base64-encode-region'."
+    (interactive "r\nP"))
   (advice-add 'base64-encode-region :before #'base64-encode-region-prefix-arg)
 
   (setq comint-terminfo-terminal "xterm-256color")
+
+  (defun endless/colorize-compilation ()
+    "Colorize from `compilation-filter-start' to `point'."
+    (let ((inhibit-read-only t))
+      (ansi-color-apply-on-region
+       compilation-filter-start (point))))
+
+  (add-hook 'compilation-filter-hook
+            #'endless/colorize-compilation)
 
   (defun copy-line-path ()
     (interactive)
@@ -694,6 +703,7 @@
     :hook
     (magit-mode . visual-line-mode)
     :custom
+    (magit-blame-echo-style 'headings)
     (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
     (magit-diff-refine-hunk t))
 
