@@ -59,7 +59,7 @@
 
   ;; Disable line numbers for some modes
   (dolist (mode '(org-mode-hook
-                    org-agenda-mode-hook
+                  org-agenda-mode-hook
                   term-mode-hook
                   treemacs-mode-hook
                   shell-mode-hook
@@ -80,10 +80,7 @@
   ;; Set the variable pitch face
   (set-face-attribute 'variable-pitch nil :font acemacs/font-variable-pitch :height acemacs/default-font-size)
 
-  (column-number-mode)
-  (setq display-line-numbers-type 'relative)
-  (global-display-line-numbers-mode t)
-  (setq-default tab-width 2)
+
 
   ;; NOTE: The first time you load your configuration on a new machine, you'll
   ;; need to run the following command interactively so that mode line icons
@@ -93,16 +90,28 @@
 
   (use-package all-the-icons)
 
-  (use-package doom-modeline
-    :init (doom-modeline-mode 1)
-    :custom ((doom-modeline-height 15)))
+  (use-package telephone-line
+    :init
+    (setq telephone-line-primary-left-separator 'telephone-line-cubed-left
+          telephone-line-secondary-left-separator 'telephone-line-cubed-hollow-left
+          telephone-line-primary-right-separator 'telephone-line-cubed-right
+          telephone-line-secondary-right-separator 'telephone-line-cubed-hollow-right)
+    (setq telephone-line-evil-use-short-tag t)
+    :config
+    (telephone-line-mode t))
 
   (use-package doom-themes
-    :init
+    :config
     (load-theme 'doom-dracula t))
 
   (use-package rainbow-delimiters
     :hook (prog-mode . rainbow-delimiters-mode))
+
+  (column-number-mode)
+  (setq display-line-numbers-type 'relative)
+  (global-display-line-numbers-mode t)
+  (set-face-attribute 'line-number-current-line nil :inherit '(highlight))
+  (setq-default tab-width 2)
 #+end_src
 
 * Auth source
@@ -116,7 +125,9 @@
 #+begin_src emacs-lisp
       (use-package vertico
       :init
-      (vertico-mode))
+      (vertico-mode)
+      :bind( :map vertico-map ("<C-return>" . vertico-exit-input)))
+
 
       (use-package orderless
       :init
@@ -139,7 +150,7 @@
               ("C-x b" . consult-buffer)
               ("C-s" . consult-line)
               ("C-c i" . consult-imenu))
-	
+
 
       ;; Enable automatic preview at point in the *Completions* buffer. This is
       ;; relevant when you use the default completion UI. You may want to also
@@ -557,29 +568,28 @@
 
 * Org roam
 #+begin_src emacs-lisp
-    (use-package org-roam
-  ;;    :hook
-    ;;  (after-init . org-roam-mode)
-      :config
-      (require 'org-roam-protocol)
-      :init
-      (setq org-roam-v2-ack t)
-      :custom
-      (org-roam-directory "~/org/notes")
-      :bind
-      (   (("C-c n l" . org-roam-buffer-toggle)
-           ("C-c n f" . org-roam-node-find)
-           ("C-c n g" . org-roam-graph)
-           ("C-c n i" . org-roam-node-insert)
-           ("C-c n I" . org-roam-insert-immediate))))
+  (use-package org-roam
+    :config
+    (require 'org-roam-protocol)
+    (setq org-id-extra-files (org-roam--list-files-find "find" org-roam-directory))
+    :init
+    (setq org-roam-v2-ack t)
+    :custom
+    (org-roam-directory "~/org/notes")
+    :bind
+    (   (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n g" . org-roam-graph)
+         ("C-c n i" . org-roam-node-insert)
+         ("C-c n I" . org-roam-insert-immediate))))
 
-    (use-package org-roam-ui
-        :after org-roam
-        :config
-        (setq org-roam-ui-sync-theme t
-            org-roam-ui-follow t
-            org-roam-ui-update-on-save t
-            org-roam-ui-open-on-start t))
+  (use-package org-roam-ui
+    :after org-roam
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
 #+end_src
 * Completion and snippets
 #+begin_src emacs-lisp
@@ -601,20 +611,21 @@
     (company-minimum-prefix-length 1)
     (company-idle-delay 0.1)
     :config
-    ;;    (global-company-mode)
-    (global-set-key (kbd "TAB") #'company-indent-or-complete-common))
+    (global-set-key (kbd "TAB") #'company-indent-or-complete-common)
+    :hook
+    (prog-mode . company-mode))
 
-;;  (use-package company-bibtex
-;;    :after company
-;;    :config
-;;    (setq company-bibtex-bibliography "/home/urbi/Documents/diss/references.bib")
-;;    (add-to-list 'company-backends 'company-bibtex))
-;;
-;;  (use-package company-lua
-;;    :config
-;;    (add-to-list 'company-backends 'company-lua))
+  ;;  (use-package company-bibtex
+  ;;    :after company
+  ;;    :config
+  ;;    (setq company-bibtex-bibliography "/home/urbi/Documents/diss/references.bib")
+  ;;    (add-to-list 'company-backends 'company-bibtex))
+  ;;
+  ;;  (use-package company-lua
+  ;;    :config
+  ;;    (add-to-list 'company-backends 'company-lua))
 
- ;; (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+  ;; (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
 
   (use-package company-box
     :hook (company-mode . company-box-mode))
@@ -734,14 +745,12 @@
 ** c/c++
 #+begin_src emacs-lisp
   (use-package c++-mode
-  :ensure nil
-  :hook
-  (c++-mode . company-mode))
+    :defer t
+    :ensure nil)
 
   (use-package c-mode
-  :ensure nil
-  :hook
-  (c-mode . company-mode))
+    :defer t
+    :ensure nil)
 #+end_src
 ** python
 #+begin_src emacs-lisp
@@ -810,7 +819,7 @@ Use lua5.3 for now, as e.g. the "see" package works only for lua5.3
 #+end_src emacs-lisp
 ** Go
 #+begin_src emacs-lisp
- (use-package go-mode) 
+  (use-package go-mode)
 #+end_src
 
 ** Formatting 
@@ -846,6 +855,19 @@ Use lua5.3 for now, as e.g. the "see" package works only for lua5.3
             (switch-to-buffer-other-window buf)
             )))
       :bind (:map sh-mode-map ("C-c C-n" . acemacs/vterm-execute-current-line)))
+#+end_src
+* Spell checking
+#+begin_src emacs-lisp
+  (use-package ispell
+    :ensure nil
+    :config
+    (setq ispell-program-name "hunspell")
+    (setq ispell-local-dictionary "combined")
+    (setq ispell-local-dictionary-alist '(("combined" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US,de_DE") nil utf-8)))
+    ;; new variable `ispell-hunspell-dictionary-alist' is defined in Emacs
+    ;; If it's nil, Emacs tries to automatically set up the dictionaries.
+    (when (boundp 'ispell-hunspell-dictionary-alist)
+      (setq ispell-hunspell-dictionary-alist ispell-local-dictionary-alist)))
 #+end_src
 
 * Start server
