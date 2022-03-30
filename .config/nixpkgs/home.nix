@@ -113,7 +113,6 @@ in
       xclip
       nix-index
       slack
-      ispell
       feh
       xournalpp
       teams
@@ -133,7 +132,9 @@ in
       bc
       openssl
       kubeval
+      hunspell
       hunspellDicts.de_DE
+      hunspellDicts.en_US
       kubernetes-helm
       libsForQt5.qtkeychain
       libsecret
@@ -153,6 +154,7 @@ in
       go_1_17
       gopls
       ginkgo
+      gore
       delve
       tmux
       telnet
