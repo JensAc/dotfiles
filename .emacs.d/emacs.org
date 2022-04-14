@@ -80,8 +80,6 @@
   ;; Set the variable pitch face
   (set-face-attribute 'variable-pitch nil :font acemacs/font-variable-pitch :height acemacs/default-font-size)
 
-
-
   ;; NOTE: The first time you load your configuration on a new machine, you'll
   ;; need to run the following command interactively so that mode line icons
   ;; display correctly:
@@ -106,6 +104,18 @@
 
   (use-package rainbow-delimiters
     :hook (prog-mode . rainbow-delimiters-mode))
+
+  (use-package ligature
+    :load-path "~/workspace/repos/ligature.el"
+    :config
+    ;; Enable all Iosevka ligatures in programming modes
+    (ligature-set-ligatures 'prog-mode '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->" "<---->" "<!--"
+                                         "<==" "<===" "<=" "=>" "=>>" "==>" "===>" ">=" "<=>" "<==>" "<===>" "<====>" "<!---"
+                                         "<~~" "<~" "~>" "~~>" "::" ":::" "==" "!=" "===" "!=="
+                                         ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>" "|>" "+:" "-:" "=:" "<******>" "++" "+++"))
+    ;; Enables ligature checks globally in all buffers. You can also do it
+    ;; per mode with `ligature-mode'.
+    (global-ligature-mode t))
 
   (column-number-mode)
   (setq display-line-numbers-type 'relative)
@@ -814,12 +824,12 @@ Use lua5.3 for now, as e.g. the "see" package works only for lua5.3
 #+end_src
 ** Nix 
 #+begin_src emacs-lisp
-  (use-package nix-mode
-  :mode "\\.nix\\'")
+  (use-package nix-mode)
 #+end_src emacs-lisp
 ** Go
 #+begin_src emacs-lisp
   (use-package go-mode)
+  (use-package go-dlv)
 #+end_src
 
 ** Formatting 
@@ -829,6 +839,8 @@ Use lua5.3 for now, as e.g. the "see" package works only for lua5.3
 ** Vterm
 #+begin_src emacs-lisp
   (use-package vterm
+     :init
+     (require 'sh-script)
      :config
      ;; see https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute_it/
      ;; sh-send-line-or-region-and-step
