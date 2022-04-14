@@ -79,6 +79,11 @@ in
     # allow font configuration
     fonts.fontconfig.enable = true;
 
+    nixpkgs.overlays = [
+      (import (builtins.fetchGit {
+        url = https://github.com/nix-community/emacs-overlay.git;
+      }))
+    ];
     # get some packages
     home.packages = with pkgs; [
       gnupg
@@ -86,7 +91,7 @@ in
       iosevka-bin
       (iosevka-bin.override { variant = "aile"; })
       noto-fonts-emoji
-      emacs
+			emacsUnstable
       rofi
       i3lock
       arandr
@@ -142,7 +147,7 @@ in
       cmake
       gnumake
       libtool
-      libvterm-neovim
+      libvterm
       google-chrome
       zoom-us
       python310
