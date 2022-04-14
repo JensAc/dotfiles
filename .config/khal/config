@@ -7,6 +7,10 @@
   [[23T personal]]
     path = ~/calendars/23Tec/personal
     color = dark blue
+		
+  [[23T outofoffice]]
+    path = ~/calendars/23Tec/23t-out-of-office_shared_by_berendt
+    color = light cyan
 
   [[ncpersonal]]
     path = ~/calendars/nextcloud/personal
