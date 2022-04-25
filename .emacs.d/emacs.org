@@ -214,7 +214,9 @@
 
   (use-package undo-tree
     :init
-    (global-undo-tree-mode))
+    (global-undo-tree-mode)
+    :config
+    (setq undo-tree-auto-save-history nil))
 
   ;; evil config
   (use-package evil
@@ -730,7 +732,9 @@
 
   ;; work with gitlab forges
   (use-package forge
-    :defer t
+    :after magit
+    :init
+    (setq forge-add-default-bindings nil)
     :config
     (add-to-list 'forge-alist '("git.rwth-aachen.de" "git.rwth-aachen.de/api/v4" "git.rwth-aachen.de" forge-gitlab-repository))
     (add-to-list 'forge-alist '("github.com" "api.github.com" "github.com" forge-github-repository)))
