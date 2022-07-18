@@ -1,9 +1,16 @@
 { config, pkgs, ... }:
 
 let
-  mach-nix-upstream = import (fetchTarball "https://github.com/DavHau/mach-nix/tarball/3.4.0") {};
+  mach-nix-upstream = import (fetchTarball "https://github.com/DavHau/mach-nix/tarball/3.5.0") {};
 in
 {
+  nix = {
+    package = pkgs.nixFlakes;
+    extraOptions = ''
+    experimental-features = nix-command flakes
+  '';
+  };
+
     # Home Manager needs a bit of information about you and the
     # paths it should manage.
     home.username = "hic";
@@ -16,7 +23,7 @@ in
       EDITOR = "emacsclient";
     };
 
-    imports = [ modules/fusuma.nix modules/vdirsyncer.nix ];
+    imports = [ modules/vdirsyncer.nix ];
 
     # configure my favorite themes
     gtk = {
@@ -30,11 +37,13 @@ in
     };
     xsession = {
       enable = true;
-      pointerCursor = {
-        package = pkgs.bibata-cursors;
-        size = 16;
-        name = "Bibata-Modern-Classic";
-      };
+    };
+
+    home.pointerCursor = {
+      package = pkgs.bibata-cursors;
+      gtk.enable = true;
+      x11.enable = true;
+      name = "Bibata-Modern-Classic";
     };
 
     # email account setup
@@ -73,8 +82,16 @@ in
         plugins = [ "git" "pass" "systemd" "kubectl" ];
         theme = "robbyrussell";
       };
+      initExtra = "export PATH=$HOME/bin:$HOME/.krew/bin:$PATH";
     };
 
+    programs.tmux = {
+      enable = true;
+      plugins = with pkgs.tmuxPlugins; [{
+        plugin = resurrect;
+        extraConfig = "set -g @resurrect-strategy-nvim 'session'";
+      }];
+    };
 
     # allow font configuration
     fonts.fontconfig.enable = true;
@@ -123,11 +140,15 @@ in
       teams
       ripgrep
       kubectl
+      krew
       gcc
       gdb
       k9s
       fluxcd
+      nodejs
       nodePackages.prettier
+      nodePackages.npm
+      nodePackages.gulp
       signal-desktop
       lxqt.screengrab
       dig
@@ -161,8 +182,7 @@ in
       ginkgo
       gore
       delve
-      tmux
-      telnet
+      inetutils
       openvpn
       ncdu
       file
@@ -171,6 +191,16 @@ in
       userhosts
       powertop
       kustomize
+      reuse
+      tree
+      wireshark
+      unzip
+      dotnetCorePackages.aspnetcore_3_1
+      obs-studio
+      kind
+      v4l-utils
+      sops
+      xsane
     ];
 
 
@@ -204,10 +234,12 @@ in
     # khal
     home.file.".config/khal/config".source =~/dotfiles/.config/khal/config;
 
-    home.file.".config/fusuma/config.yml".source =~/dotfiles/.config/fusuma/config.yml;
-    services.fusuma.enable = true;
+    # services.fusuma.enable = true;
+    # home.file.".config/fusuma/config.yaml".source =~/dotfiles/.config/fusuma/config.yml;
 
     home.file.".Xmodmap".source =~/dotfiles/.Xmodmap;
+
+    home.file.".config/dlv/config.yml".source =~/dotfiles/.config/dlv/config.yml;
 
     services.nextcloud-client.enable = true;
     services.syncthing.enable = true;
@@ -217,6 +249,7 @@ in
 
     services.gpg-agent = {
       enable = true;
+      enableSshSupport = true;
       defaultCacheTtl = 25000;
       maxCacheTtl = 25000;
     };
