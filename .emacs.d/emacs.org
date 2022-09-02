@@ -700,6 +700,11 @@
 #+end_src
 ** Projectile
 #+begin_src emacs-lisp
+
+  (defun my-projectile-project-find-function (dir)
+    (let ((root (projectile-project-root dir)))
+      (and root (cons 'transient root))))
+
   (use-package projectile
     :diminish projectile-mode
     :config (projectile-mode)
@@ -709,7 +714,9 @@
     :init
     (when (file-directory-p "~/Software")
       (setq projectile-project-search-path '("~/Software")))
-    (setq projectile-switch-project-action #'projectile-dired))
+    (setq projectile-switch-project-action #'projectile-dired)
+    (with-eval-after-load 'project
+      (add-to-list 'project-find-functions 'my-projectile-project-find-function)))
 
   (use-package projectile-ripgrep
     :after projectile)
@@ -776,8 +783,8 @@
       :init
       (advice-add 'python-mode :before 'elpy-enable))
       :config
-      (setq python-shell-interpreter "ipython")
-      (setq python-shell-interpreter-args "-i --simple-prompt")
+      (setq python-shell-interpreter "python")
+      (setq python-shell-interpreter-args "-i")
 
   (use-package pyenv-mode
     :defer t)
@@ -790,7 +797,9 @@
 #+end_src
 ** Yaml
 #+begin_src emacs-lisp
-  (use-package yaml-mode)
+      (use-package yaml-mode
+        :hook
+        ('yaml-mode . (lambda () (add-hook 'before-save-hook #'whitespace-cleanup nil 'local))))
 #+end_src
 ** LaTeX
 #+begin_src emacs-lisp
