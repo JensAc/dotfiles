@@ -707,13 +707,12 @@
 
   (use-package projectile
     :diminish projectile-mode
+    :demand t
     :config (projectile-mode)
     :custom ((projectile-completion-system 'ivy))
     :bind-keymap
     ("C-c p" . projectile-command-map)
     :init
-    (when (file-directory-p "~/Software")
-      (setq projectile-project-search-path '("~/Software")))
     (setq projectile-switch-project-action #'projectile-dired)
     (with-eval-after-load 'project
       (add-to-list 'project-find-functions 'my-projectile-project-find-function)))
