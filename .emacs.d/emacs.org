@@ -119,6 +119,11 @@
   (global-display-line-numbers-mode t)
   (set-face-attribute 'line-number-current-line nil :inherit '(highlight))
   (setq-default tab-width 2)
+  (setq make-backup-files nil)
+
+  ;; ediff appearance
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+  (setq ediff-split-window-function 'split-window-horizontally)
 
   
   (load-theme 'dracula t)
