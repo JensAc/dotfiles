@@ -125,8 +125,10 @@
   (setq ediff-window-setup-function 'ediff-setup-windows-plain)
   (setq ediff-split-window-function 'split-window-horizontally)
 
-  
-  (load-theme 'dracula t)
+  (use-package dracula-theme
+    :config
+    (load-theme 'dracula t))
+
 #+end_src
 
 * Auth source
