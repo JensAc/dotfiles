@@ -103,114 +103,114 @@ in
     ];
     # get some packages
     home.packages = with pkgs; [
-      appimage-run
-      gnupg
-      pass
-      iosevka
-      iosevka-bin
-      (iosevka-bin.override { variant = "aile"; })
-      noto-fonts-emoji
 			emacsUnstable
-      rofi
-      i3lock
+      (iosevka-bin.override { variant = "aile"; })
+      appimage-run
       arandr
-      khal
-      vdirsyncer
+      bc
+      clusterctl
+      cmake
+      delve
+      dig
+      dotnetCorePackages.aspnetcore_3_1
       evince
-      texlive.combined.scheme-full
-      libreoffice
-      isync
-      mu
-      lua53Packages.digestif
-      xarchiver
-      htop
-      xfce.thunar
-      xfce.thunar-volman
-      grsync
-      gnome.gnome-disk-utility
-      lxappearance
-      libnotify
-      rnix-lsp
-      xorg.xev
-      xorg.xmodmap
-      xdotool
-      xclip
-      nix-index
-      slack
       feh
-      xournalpp
-      teams
-      ripgrep
-      kubectl
-      krew
+      file
+      fluxcd
+      font-manager
       gcc
       gdb
-      k9s
-      fluxcd
-      nodejs
-      nodePackages.prettier
-      nodePackages.npm
-      nodePackages.gulp
-      signal-desktop
-      lxqt.screengrab
-      dig
-      nodePackages.yaml-language-server
-      nodePackages.bash-language-server
-      minio-client
-      bc
-      openssl
-      kubeval
+      gh
+      gimp
+      ginkgo
+      gnome.gnome-disk-utility
+      gnumake
+      gnupg
+      go_1_17
+      google-chrome
+      gopls
+      gore
+      govc
+      grsync
+      htop
       hunspell
       hunspellDicts.de_DE
       hunspellDicts.en_US
+      i3lock
+      inetutils
+      inkscape
+      iosevka
+      iosevka-bin
+      isync
+      jq
+      k9s
+      khal
+      kicad
+      kind
+      krew
+      kubectl
       kubernetes-helm
+      kubeval
+      kustomize
+      libnotify
+      libreoffice
       libsForQt5.qtkeychain
       libsecret
-      gimp
-      cmake
-      gnumake
       libtool
       libvterm
-      google-chrome
-      zoom-us
-      python310
-      meld
+      lua53Packages.digestif
+      lxappearance
+      lxqt.screengrab
       mach-nix-upstream.mach-nix
-      jq
+      meld
+      minio-client
+      mu
+      ncdu
+      nix-index
       nix-prefetch
       nmap
-      go_1_17
-      gopls
-      ginkgo
-      gore
-      delve
-      inetutils
-      openvpn
-      ncdu
-      file
-      vscode
-      inkscape
-      userhosts
-      powertop
-      kustomize
-      reuse
-      tree
-      wireshark
-      unzip
-      dotnetCorePackages.aspnetcore_3_1
+      nodePackages.bash-language-server
+      nodePackages.gulp
+      nodePackages.npm
+      nodePackages.prettier
+      nodePackages.yaml-language-server
+      nodejs
+      noto-fonts-emoji
       obs-studio
-      kind
-      v4l-utils
-      sops
-      xsane
-      rt-tests
+      openssl
+      openvpn
+      pass
       patchelf
-      font-manager
-      kicad
+      powertop
+      python310
+      reuse
+      ripgrep
+      rnix-lsp
+      rofi
+      rt-tests
+      signal-desktop
+      slack
+      sops
+      teams
+      texlive.combined.scheme-full
+      tree
+      unzip
+      userhosts
+      v4l-utils
+      vdirsyncer
+      vscode
+      wireshark
+      xarchiver
+      xclip
+      xdotool
+      xfce.thunar
+      xfce.thunar-volman
+      xorg.xev
+      xorg.xmodmap
+      xournalpp
+      xsane
       zip
-      govc
-      clusterctl
-      gh
+      zoom-us
     ];
 
 
