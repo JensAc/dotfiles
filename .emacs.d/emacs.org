@@ -763,12 +763,26 @@
     ;; this was somehow required when running eglot in some Go projects
     (setq max-specpdl-size 32000)
     (setq max-lisp-eval-depth 8000)
+    (set-face-attribute 'eglot-highlight-symbol-face nil :underline t)
     :hook
     ((LaTeX-mode . eglot-ensure)
     (c++-mode . eglot-ensure)
     (c-mode . eglot-ensure)
+    (go-mode . eglot-ensure)
+    (sh-mode . eglot-ensure)
     ))
 #+end_src
+** tree-sitter
+#+begin_src emacs-lisp
+  (use-package tree-sitter-langs)
+
+  (use-package tree-sitter
+    :config
+    (global-tree-sitter-mode)
+    :hook
+    (tree-sitter-after-on . tree-sitter-hl-mode))
+#+end_src
+
 ** c/c++
 #+begin_src emacs-lisp
   (use-package c++-mode
