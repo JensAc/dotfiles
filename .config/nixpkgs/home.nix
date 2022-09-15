@@ -103,8 +103,10 @@ in
     ];
     # get some packages
     home.packages = with pkgs; [
+      appimage-run
       gnupg
       pass
+      iosevka
       iosevka-bin
       (iosevka-bin.override { variant = "aile"; })
       noto-fonts-emoji
@@ -201,6 +203,14 @@ in
       v4l-utils
       sops
       xsane
+      rt-tests
+      patchelf
+      font-manager
+      kicad
+      zip
+      govc
+      clusterctl
+      gh
     ];
 
 
