@@ -906,8 +906,8 @@ Use lua5.3 for now, as e.g. the "see" package works only for lua5.3
   (use-package ispell
     :ensure nil
     :config
+    (setq ispell-dictionary "combined")
     (setq ispell-program-name "hunspell")
-    (setq ispell-local-dictionary "combined")
     (setq ispell-local-dictionary-alist '(("combined" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US,de_DE") nil utf-8)))
     ;; new variable `ispell-hunspell-dictionary-alist' is defined in Emacs
     ;; If it's nil, Emacs tries to automatically set up the dictionaries.
