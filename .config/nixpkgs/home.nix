@@ -82,7 +82,7 @@ in
         plugins = [ "git" "pass" "systemd" "kubectl" ];
         theme = "robbyrussell";
       };
-      initExtra = "export PATH=$HOME/bin:$HOME/.krew/bin:$PATH";
+      initExtra = "export PATH=$HOME/bin:$HOME/.krew/bin:$HOME/.npm-global/bin:$PATH";
     };
 
     programs.tmux = {
@@ -108,6 +108,7 @@ in
       appimage-run
       arandr
       bc
+      cfssl
       clusterctl
       cmake
       delve
@@ -250,6 +251,8 @@ in
     home.file.".Xmodmap".source =~/dotfiles/.Xmodmap;
 
     home.file.".config/dlv/config.yml".source =~/dotfiles/.config/dlv/config.yml;
+    
+    home.file.".config/.npmrc".source =~/dotfiles/.npmrc;
 
     services.nextcloud-client.enable = true;
     services.syncthing.enable = true;
