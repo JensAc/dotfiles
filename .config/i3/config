@@ -210,6 +210,7 @@ bar {
 assign [class="GDB-ImageWatch"] $workspace0
 assign [class="Mattermost"] $workspace4
 assign [class="Slack"] $workspace4
+assign [class="Element"] $workspace4
 assign [class="TelegramDesktop"] $workspace4
 assign [class="zoom"] $workspace4
 assign [class="discord"] $workspace4
@@ -233,6 +234,7 @@ bindsym Control+Shift+l exec "pkill --signal SIGHUP gpg-agent & i3lock"
 # launch some application at startup
 exec --no-startup-id "pasystray"
 exec --no-startup-id "slack --disable-gpu "
+exec --no-startup-id "element-desktop"
 exec --no-startup-id "telegram-desktop"
 exec --no-startup-id "signal-desktop --start-in-tray"
 exec --no-startup-id "nextcloud"

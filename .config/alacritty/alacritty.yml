@@ -98,7 +98,7 @@ font:
     #   - (Linux/BSD) monospace
     #   - (Windows) Consolas
     family: Symbola
-    family: FontAwesome 
+    family: FontAwesome
     family: file-icons
     family: iosevka term
     # The `style` can be specified to pick a specific face.
@@ -164,6 +164,9 @@ colors:
   vi_mode_cursor:
     text: CellBackground
     cursor: CellForeground
+  footer_bar:
+    background: '0x282a36'
+    foreground: '0xf8f8f2'
   search:
     matches:
       foreground: '0x44475a'
@@ -171,9 +174,6 @@ colors:
     focused_match:
       foreground: '0x44475a'
       background: '0xffb86c'
-    bar:
-      background: '0x282a36'
-      foreground: '0xf8f8f2'
   line_indicator:
     foreground: None
     background: None
@@ -207,7 +207,7 @@ colors:
     magenta: '0xff46b0'
     cyan:    '0x59dffc'
     white:   '0xe6e6d1'
-    
+
 # Visual Bell
 #
 # Any time the BEL code is received, Alacritty "rings" the visual bell. Once

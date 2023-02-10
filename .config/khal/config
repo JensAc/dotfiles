@@ -43,3 +43,4 @@ dateformat = %Y-%m-%d
 longdateformat = %Y-%m-%d %a
 datetimeformat = %Y-%m-%d %H:%M
 longdatetimeformat = %Y-%m-%d %H:%M
+weeknumbers = right
