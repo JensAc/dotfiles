@@ -2,6 +2,7 @@
 
 let
   mach-nix-upstream = import (fetchTarball "https://github.com/DavHau/mach-nix/tarball/3.5.0") {};
+  pkgsUnstable = import <nixos-unstable> {};
 in
 {
   nix = {
@@ -10,6 +11,18 @@ in
     experimental-features = nix-command flakes
   '';
   };
+
+    nixpkgs.overlays = [
+      (import (builtins.fetchGit {
+        url = https://github.com/nix-community/emacs-overlay.git;
+      }))
+      (final: previous: {
+        mu = pkgsUnstable.mu;
+      })
+      (final: previous: {
+        fluxcd = pkgsUnstable.fluxcd;
+      })
+    ];
 
     # Home Manager needs a bit of information about you and the
     # paths it should manage.
@@ -73,6 +86,9 @@ in
     # zsh setup
     programs.zsh = {
       enable = true;
+      enableCompletion = true;
+      enableSyntaxHighlighting = true;
+      enableAutosuggestions = true;
       history = {
         size = 10000;
         path = "${config.xdg.dataHome}/zsh/history";
@@ -96,11 +112,6 @@ in
     # allow font configuration
     fonts.fontconfig.enable = true;
 
-    nixpkgs.overlays = [
-      (import (builtins.fetchGit {
-        url = https://github.com/nix-community/emacs-overlay.git;
-      }))
-    ];
     # get some packages
     home.packages = with pkgs; [
 			emacsUnstable
@@ -113,7 +124,9 @@ in
       cmake
       delve
       dig
+      direnv
       dotnetCorePackages.aspnetcore_3_1
+      element-desktop
       evince
       feh
       file
@@ -127,7 +140,7 @@ in
       gnome.gnome-disk-utility
       gnumake
       gnupg
-      go_1_17
+      go
       google-chrome
       gopls
       gore
@@ -143,11 +156,13 @@ in
       iosevka
       iosevka-bin
       isync
+      jetbrains.goland
       jq
       k9s
       khal
       kicad
       kind
+      ko
       krew
       kubectl
       kubernetes-helm
@@ -182,8 +197,10 @@ in
       openvpn
       pass
       patchelf
+      pdftk
       powertop
       python310
+      rclone
       reuse
       ripgrep
       rnix-lsp
@@ -193,6 +210,7 @@ in
       slack
       sops
       teams
+      terraform 
       texlive.combined.scheme-full
       tree
       unzip
