@@ -16,7 +16,7 @@ Inbox ~/email/posteo/Inbox
 Channel posteo
 Far :posteo-remote:
 Near :posteo-local:
-Patterns *
+Patterns * !LocalArchive
 Create Both
 Expunge Both
 SyncState *
