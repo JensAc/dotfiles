@@ -63,7 +63,7 @@ Inbox ~/email/ient/Inbox
 Channel ient
 Far :ient-remote:
 Near :ient-local:
-Patterns *
+Patterns * !LocalArchive
 Create Both
 Expunge Both
 SyncState *
