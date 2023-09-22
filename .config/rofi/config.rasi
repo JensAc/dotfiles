@@ -1,6 +1,7 @@
 configuration {
-	font: "pango:iosevka 12";
+	font: "pango:iosevka 14";
 	ssh-command: "{terminal} -e "{ssh-client} {host}"";
 	parse-known-hosts: false;
+        show-icons: true;
 }
 @theme "purple"
