@@ -114,24 +114,27 @@ in
 
     # get some packages
     home.packages = with pkgs; [
-			emacsUnstable
+      azure-cli
+      AusweisApp2
+			emacs-unstable
       (iosevka-bin.override { variant = "aile"; })
       appimage-run
       arandr
       bc
+      bitwarden
       cfssl
       clusterctl
       cmake
       delve
       dig
       direnv
-      dotnetCorePackages.aspnetcore_3_1
       element-desktop
       evince
       feh
       file
       fluxcd
       font-manager
+      fzf
       gcc
       gdb
       gh
@@ -142,9 +145,11 @@ in
       gnupg
       go
       google-chrome
+      google-cloud-sdk
       gopls
       gore
       govc
+      gradle
       grsync
       htop
       hunspell
@@ -156,15 +161,20 @@ in
       iosevka
       iosevka-bin
       isync
+      jdk
+      jetbrains.idea-community
       jetbrains.goland
       jq
-      k9s
+      jwt-cli
+      pkgsUnstable.k9s
       khal
       kicad
       kind
       ko
+      kotlin
       krew
       kubectl
+      kubernetes-code-generator
       kubernetes-helm
       kubeval
       kustomize
@@ -179,6 +189,7 @@ in
       lxqt.screengrab
       mach-nix-upstream.mach-nix
       meld
+      minikube
       minio-client
       mu
       ncdu
@@ -194,11 +205,14 @@ in
       noto-fonts-emoji
       obs-studio
       openssl
+      openstackclient
       openvpn
-      pass
+      (pass.withExtensions (exts: [ exts.pass-otp ]))
       patchelf
       pdftk
       powertop
+      protobuf
+      protoc-gen-go
       python310
       rclone
       reuse
@@ -207,6 +221,7 @@ in
       rofi
       rt-tests
       signal-desktop
+      skaffold
       slack
       sops
       teams
@@ -228,6 +243,8 @@ in
       xorg.xmodmap
       xournalpp
       xsane
+      yarn
+      zellij
       zip
       zoom-us
     ];
@@ -292,6 +309,11 @@ in
       longitude = 6.0838868;
     };
 
+    services.clipmenu = {
+      enable = true;
+      launcher = "rofi";
+    };
+    
     # This value determines the Home Manager release that your
     # configuration is compatible with. This helps avoid breakage
     # when a new Home Manager release introduces backwards
