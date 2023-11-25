@@ -251,7 +251,7 @@ exec --no-startup-id "xmodmap ~/.Xmodmap"
 
 # set figures in floating mode
 for_window [title="Figure*"] floating enable
-for_window [class="GDB-ImageWatch"] floating enable
+for_window [title="Open Image Debugger"] floating enable
 
 # set zoom breakout rooms and chat in floating mode
 for_window [title="Breakout Rooms.*"] floating enable
