@@ -1,7 +1,6 @@
 { config, pkgs, ... }:
 
 let
-  mach-nix-upstream = import (fetchTarball "https://github.com/DavHau/mach-nix/tarball/3.5.0") {};
   pkgsUnstable = import <nixos-unstable> {};
 in
 {
@@ -17,11 +16,14 @@ in
         url = https://github.com/nix-community/emacs-overlay.git;
       }))
       (final: previous: {
-        mu = pkgsUnstable.mu;
-      })
-      (final: previous: {
         fluxcd = pkgsUnstable.fluxcd;
       })
+    ];
+
+    # Changes for qt5
+    nixpkgs.config.allowUnfree = true;
+    nixpkgs.config.permittedInsecurePackages = [
+       "teams-1.5.00.23861"
     ];
 
     # Home Manager needs a bit of information about you and the
@@ -98,7 +100,7 @@ in
         plugins = [ "git" "pass" "systemd" "kubectl" ];
         theme = "robbyrussell";
       };
-      initExtra = "export PATH=$HOME/bin:$HOME/.krew/bin:$HOME/.npm-global/bin:$PATH";
+      initExtra = "export PATH=$HOME/bin:$HOME/.krew/bin:$HOME/.npm-global/bin:$PATH\neval \"$(direnv hook zsh)\"";
     };
 
     programs.tmux = {
@@ -124,6 +126,7 @@ in
       bitwarden
       cfssl
       clusterctl
+      clang-tools
       cmake
       delve
       dig
@@ -171,6 +174,7 @@ in
       kicad
       kind
       ko
+      stdenv.cc.cc.lib
       kotlin
       krew
       kubectl
@@ -180,15 +184,18 @@ in
       kustomize
       libnotify
       libreoffice
+      libsForQt5.qt5.qtbase
       libsForQt5.qtkeychain
+      libsForQt5.yuview
       libsecret
       libtool
       libvterm
       lua53Packages.digestif
       lxappearance
       lxqt.screengrab
-      mach-nix-upstream.mach-nix
+      libglvnd
       meld
+      mesa
       minikube
       minio-client
       mu
@@ -215,12 +222,15 @@ in
       protoc-gen-go
       python310
       rclone
+      qtcreator
       reuse
       ripgrep
       rnix-lsp
       rofi
       rt-tests
+      shellcheck 
       signal-desktop
+      sipcalc
       skaffold
       slack
       sops
@@ -230,6 +240,7 @@ in
       tree
       unzip
       userhosts
+      valgrind
       v4l-utils
       vdirsyncer
       vscode
@@ -313,7 +324,7 @@ in
       enable = true;
       launcher = "rofi";
     };
-    
+
     # This value determines the Home Manager release that your
     # configuration is compatible with. This helps avoid breakage
     # when a new Home Manager release introduces backwards
