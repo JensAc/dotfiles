@@ -261,6 +261,20 @@
     (evil-collection-init))
 #+end_src
 
+* Expand region and multiple cursors
+#+begin_src emacs-lisp
+  (use-package expand-region
+   :config
+   (global-set-key (kbd "C-=") 'er/expand-region))
+
+  (use-package multiple-cursors
+    :config
+    (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+    (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+    (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this))
+
+#+end_src
+
 * Dired
 #+begin_src emacs-lisp
   (use-package dired
@@ -811,14 +825,17 @@
        (setq read-process-output-max (* 1024 1024)) ;; 1mb
        :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
               (go-mode . lsp)
+              (c++-mode . lsp)
               (typescript-mode . lsp)
               (vue-mode . lsp)
+              (python-mode . lsp)
               ;; if you want which-key integration
               (lsp-mode . lsp-enable-which-key-integration))
        :commands lsp)
    ;; optionally if you want to use debugger
    (use-package dap-mode)
    (require 'dap-dlv-go)
+   (require 'dap-gdb-lldb)
 
 #+end_src
 ** tree-sitter
@@ -852,8 +869,8 @@
       :init
       (advice-add 'python-mode :before 'elpy-enable))
       :config
-      (setq python-shell-interpreter "python")
-      (setq python-shell-interpreter-args "-i")
+      (setq python-shell-interpreter "ipython")
+      (setq python-shell-interpreter-args "-i --simple-prompt")
 
   (use-package pyenv-mode
     :defer t)
