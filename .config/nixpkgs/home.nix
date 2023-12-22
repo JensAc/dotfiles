@@ -18,6 +18,9 @@ in
       (final: previous: {
         fluxcd = pkgsUnstable.fluxcd;
       })
+      (final: previous: {
+        go = pkgsUnstable.go;
+      })
     ];
 
     # Changes for qt5
