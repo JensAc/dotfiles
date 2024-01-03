@@ -2,23 +2,6 @@
 # A folder where vdirsyncer can store some metadata about each pair.
 status_path = "~/.vdirsyncer/status/"
 
-[pair 23T]
-a = "23T_local"
-b = "23T_remote"
-collections = ["from a", "from b"]
-metadata = ["color"]
-
-[storage 23T_local]
-type = "filesystem"
-path = "~/calendars/23Tec"
-fileext = ".ics"
-
-[storage 23T_remote]
-type = "caldav"
-url = "https://nextcloud.23technologies.cloud/"
-username = "schneider"
-password.fetch = ["command", "~/.config/vdirsyncer/getpwnc_23.sh"]
-
 
 [pair nextcloud]
 a = "nextcloud_local"
