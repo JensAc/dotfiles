@@ -336,39 +336,6 @@
                                                       ("/posteo/Archive" . ?a)
                                                       ("/posteo/Trash"   . ?t)
                                                       ("/posteo/Drafts"   . ?d) ))))
-               , (make-mu4e-context
-                  :name "23Tec"
-                  :enter-func (lambda () (mu4e-message "Entering 23Tec context"))
-                  :leave-func (lambda () (mu4e-message "Leaving 23Tec context"))
-                  ;; we match based on the contact-fields of the message
-                  :match-func (lambda (msg)
-                                (when msg
-                                  (mu4e-message-contact-field-matches msg
-                                                                      :to "schneider@23technologies.cloud")))
-                  :vars '( ( user-mail-address	   . "schneider@23technologies.cloud"  )
-                           ( mu4e-compose-signature-auto-include . nil)
-                           ( mu4e-compose-signature . "Dr.-Ing. Jens Schneider
-    Software Engineer\n
-    Mail: schneider@23technologies.cloud 
-    Web: https://23technologies.cloud\n
-    23 Technologies GmbH
-    Teckstraße 62 / 70190 Stuttgart / Deutschland\n
-    Geschäftsführer: Christian Berendt
-    Unternehmenssitz: Stuttgart
-    Amtsgericht: Stuttgart, HRB 776151")
-                           ( mu4e-sent-folder      . "/23Tec/Sent" )
-                           ( mu4e-trash-folder     . "/23Tec/Trash" )
-                           ( mu4e-drafts-folder    . "/23Tec/Drafts" )
-                           ( mu4e-refile-folder    . "/23Tec/Archive" )
-                           ( smtpmail-smtp-user    . "schneider@23technologies.cloud" )
-                           ( smtpmail-smtp-server  . "mail.your-server.de")
-                           ( smtpmail-default-smtp-server . "mail.your-server.de" )
-                           ( smtpmail-smtp-service . 587)
-                           (mu4e-maildir-shortcuts . ( ("/23Tec/Inbox"   . ?i)
-                                                       ("/23Tec/Sent"    . ?s)
-                                                       ("/23Tec/Archive" . ?a)
-                                                       ("/23Tec/Trash"   . ?t)
-                                                       ("/23Tec/Drafts"   . ?d) ))))
                ,(make-mu4e-context
                  :name "Rwth"
                  :enter-func (lambda () (mu4e-message "Entering Rwth context"))
