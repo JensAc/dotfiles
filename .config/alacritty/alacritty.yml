@@ -97,9 +97,6 @@ font:
     #   - (macOS) Menlo
     #   - (Linux/BSD) monospace
     #   - (Windows) Consolas
-    family: Symbola
-    family: FontAwesome
-    family: file-icons
     family: iosevka term
     # The `style` can be specified to pick a specific face.
     style: Regular
