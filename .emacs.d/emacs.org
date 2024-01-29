@@ -43,7 +43,7 @@
   (global-unset-key (kbd "C-x C-c"))
 
   ;; You will most likely need to adjust this font size for your system!
-  (defvar acemacs/default-font-size 120)
+  (defvar acemacs/default-font-size 140)
 
   (setq inhibit-startup-message t)
 
@@ -103,7 +103,6 @@
     :hook (prog-mode . rainbow-delimiters-mode))
 
   (use-package ligature
-    :load-path "~/workspace/repos/ligature.el"
     :config
     ;; Enable all Iosevka ligatures in programming modes
     (ligature-set-ligatures 'prog-mode '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->" "<---->" "<!--"
@@ -803,6 +802,16 @@
    (use-package dap-mode)
    (require 'dap-dlv-go)
    (require 'dap-gdb-lldb)
+   (require 'dap-python)
+   (setq dap-python-debugger 'debugpy)
+
+(use-package lsp-pyright
+  :ensure t
+  :hook (python-mode . (lambda ()
+                          (require 'lsp-pyright)
+                          (lsp))))  ; or lsp-deferred
+
+  
 
 #+end_src
 ** tree-sitter
