@@ -41,8 +41,6 @@ in
       EDITOR = "emacsclient";
     };
 
-    imports = [ modules/vdirsyncer.nix ];
-
     # configure my favorite themes
     gtk = {
       enable = true;
@@ -56,6 +54,8 @@ in
     xsession = {
       enable = true;
     };
+
+    xresources.extraConfig = "Xft.dpi: 120";
 
     home.pointerCursor = {
       package = pkgs.bibata-cursors;
@@ -71,10 +71,6 @@ in
         primary = true;
         mu.enable = true;
         address = "jens.schneider.ac@posteo.de";
-      };
-      accounts."23Tec" = {
-        mu.enable = true;
-        address = "schneider@23technologies.cloud";
       };
       accounts.ient = {
         mu.enable = true;
@@ -92,7 +88,7 @@ in
     programs.zsh = {
       enable = true;
       enableCompletion = true;
-      enableSyntaxHighlighting = true;
+      syntaxHighlighting.enable = false;
       enableAutosuggestions = true;
       history = {
         size = 10000;
@@ -100,10 +96,10 @@ in
       };
       oh-my-zsh = {
         enable = true;
-        plugins = [ "git" "pass" "systemd" "kubectl" ];
+        plugins = [ "pass" ];
         theme = "robbyrussell";
       };
-      initExtra = "export PATH=$HOME/bin:$HOME/.krew/bin:$HOME/.npm-global/bin:$PATH\neval \"$(direnv hook zsh)\"";
+      initExtra = "export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:$PATH\neval \"$(direnv hook zsh)\"\neval \"$(pyenv init -)\"";
     };
 
     programs.tmux = {
@@ -122,6 +118,7 @@ in
       azure-cli
       AusweisApp2
 			emacs-unstable
+			emacsPackages.mu4e
       (iosevka-bin.override { variant = "aile"; })
       appimage-run
       arandr
@@ -131,6 +128,7 @@ in
       clusterctl
       clang-tools
       cmake
+      cmake-language-server
       delve
       dig
       direnv
@@ -146,6 +144,7 @@ in
       gh
       gimp
       ginkgo
+      glab
       gnome.gnome-disk-utility
       gnumake
       gnupg
@@ -193,7 +192,6 @@ in
       libsecret
       libtool
       libvterm
-      lua53Packages.digestif
       lxappearance
       lxqt.screengrab
       libglvnd
@@ -223,7 +221,6 @@ in
       powertop
       protobuf
       protoc-gen-go
-      python310
       rclone
       qtcreator
       reuse
@@ -237,29 +234,29 @@ in
       skaffold
       slack
       sops
-      teams
       terraform 
       texlive.combined.scheme-full
+      tk
       tree
       unzip
+      unrar
       userhosts
       valgrind
       v4l-utils
-      vdirsyncer
       vscode
       wireshark
       xarchiver
       xclip
       xdotool
-      xfce.thunar
-      xfce.thunar-volman
       xorg.xev
       xorg.xmodmap
       xournalpp
       xsane
       yarn
+      yq-go
       zellij
       zip
+      zlib
       zoom-us
     ];
 
