@@ -1,9 +1,12 @@
 { config, pkgs, ... }:
 
+
 let
   pkgsUnstable = import <nixos-unstable> {};
 in
 {
+
+  targets.genericLinux.enable = true;
   nix = {
     package = pkgs.nixFlakes;
     extraOptions = ''
@@ -16,18 +19,12 @@ in
         url = https://github.com/nix-community/emacs-overlay.git;
       }))
       (final: previous: {
-        fluxcd = pkgsUnstable.fluxcd;
-      })
-      (final: previous: {
         go = pkgsUnstable.go;
       })
     ];
 
     # Changes for qt5
     nixpkgs.config.allowUnfree = true;
-    nixpkgs.config.permittedInsecurePackages = [
-       "teams-1.5.00.23861"
-    ];
 
     # Home Manager needs a bit of information about you and the
     # paths it should manage.
@@ -89,17 +86,18 @@ in
       enable = true;
       enableCompletion = true;
       syntaxHighlighting.enable = false;
-      enableAutosuggestions = true;
+      autosuggestion.enable = true;
       history = {
         size = 10000;
         path = "${config.xdg.dataHome}/zsh/history";
       };
       oh-my-zsh = {
         enable = true;
-        plugins = [ "pass" ];
+        plugins = [ "pass" "kubectl" ];
         theme = "robbyrussell";
       };
-      initExtra = "export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:$PATH\neval \"$(direnv hook zsh)\"\neval \"$(pyenv init -)\"";
+      initExtra = "export PATH=$HOME/.local/bin:$HOME/.krew/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:$PATH\neval \"$(direnv hook zsh)\"\neval \"$(pyenv init -)\"";
+      profileExtra = "export PATH=$HOME/bin:$PATH $PATH";
     };
 
     programs.tmux = {
@@ -115,17 +113,17 @@ in
 
     # get some packages
     home.packages = with pkgs; [
-      azure-cli
       AusweisApp2
+      ant
 			emacs-unstable
 			emacsPackages.mu4e
-      (iosevka-bin.override { variant = "aile"; })
+      (iosevka-bin.override { variant = "Aile"; })
       appimage-run
       arandr
       bc
-      bitwarden
+      cargo
+      ccls
       cfssl
-      clusterctl
       clang-tools
       cmake
       cmake-language-server
@@ -136,7 +134,6 @@ in
       evince
       feh
       file
-      fluxcd
       font-manager
       fzf
       gcc
@@ -150,11 +147,7 @@ in
       gnupg
       go
       google-chrome
-      google-cloud-sdk
       gopls
-      gore
-      govc
-      gradle
       grsync
       htop
       hunspell
@@ -167,22 +160,17 @@ in
       iosevka-bin
       isync
       jdk
-      jetbrains.idea-community
-      jetbrains.goland
+      jetbrains.pycharm-community
       jq
       jwt-cli
       pkgsUnstable.k9s
       khal
-      kicad
       kind
       ko
       stdenv.cc.cc.lib
-      kotlin
       krew
       kubectl
-      kubernetes-code-generator
       kubernetes-helm
-      kubeval
       kustomize
       libnotify
       libreoffice
@@ -197,10 +185,12 @@ in
       libglvnd
       meld
       mesa
-      minikube
       minio-client
+      mongodb-compass
+      mongosh
       mu
       ncdu
+      ninja
       nix-index
       nix-prefetch
       nmap
@@ -213,48 +203,45 @@ in
       noto-fonts-emoji
       obs-studio
       openssl
-      openstackclient
       openvpn
       (pass.withExtensions (exts: [ exts.pass-otp ]))
       patchelf
       pdftk
-      powertop
-      protobuf
-      protoc-gen-go
       rclone
       qtcreator
-      reuse
       ripgrep
-      rnix-lsp
       rofi
-      rt-tests
       shellcheck 
       signal-desktop
       sipcalc
-      skaffold
       slack
       sops
-      terraform 
+      sshfs
+      sshuttle
+      stern
       texlive.combined.scheme-full
+      texlab
       tk
       tree
       unzip
       unrar
-      userhosts
       valgrind
       v4l-utils
       vscode
+      watson
       wireshark
       xarchiver
       xclip
       xdotool
       xorg.xev
+      xorg.libX11
+      xorg.libX11.dev
       xorg.xmodmap
       xournalpp
       xsane
       yarn
       yq-go
-      zellij
+      zathura
       zip
       zlib
       zoom-us
@@ -286,7 +273,7 @@ in
     home.file.".config/vdirsyncer/getpwnc.sh".source =~/dotfiles/.config/vdirsyncer/getpwnc.sh;
     home.file.".config/vdirsyncer/getpwnc_tvv.sh".source =~/dotfiles/.config/vdirsyncer/getpwnc_tvv.sh;
     home.file.".config/vdirsyncer/getpwnc_23.sh".source =~/dotfiles/.config/vdirsyncer/getpwnc_23.sh;
-    services.vdirsyncer.enable = true;
+    services.vdirsyncer.enable = false;
 
     # khal
     home.file.".config/khal/config".source =~/dotfiles/.config/khal/config;
@@ -311,6 +298,7 @@ in
       enableSshSupport = true;
       defaultCacheTtl = 25000;
       maxCacheTtl = 25000;
+      pinentryPackage = pkgs.pinentry-gtk2;
     };
 
     services.redshift = {
