@@ -758,6 +758,7 @@
     (setq forge-add-default-bindings nil)
     :config
     (add-to-list 'forge-alist '("git.rwth-aachen.de" "git.rwth-aachen.de/api/v4" "git.rwth-aachen.de" forge-gitlab-repository))
+    (add-to-list 'forge-alist '("gitlab.mainconcept.com" "gitlab.mainconcept.com/api/v4" "gitlab.mainconcept.com" forge-gitlab-repository))
     (add-to-list 'forge-alist '("github.com" "api.github.com" "github.com" forge-github-repository)))
 #+end_src
 ** eglot
@@ -780,38 +781,51 @@
   ;;    ))
 
 
+  (use-package lsp-mode
+    :init
+    ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+    (setq lsp-keymap-prefix "C-c l")
+    (setq gc-cons-threshold 100000000)
+    (setq read-process-output-max (* 1024 1024)) ;; 1mb
+    :config
+    (setq lsp-pylsp-plugins-jedi-use-pyenv-environment t)
+    :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+           (go-mode . lsp)
+           (c++-mode . lsp)
+           (typescript-mode . lsp)
+           (vue-mode . lsp)
+           (python-mode . lsp)
+           ;; if you want which-key integration
+           (lsp-mode . lsp-enable-which-key-integration))
+    :commands lsp)
+  ;; optionally if you want to use debugger
+  (use-package dap-mode
+    :config
+    (require 'dap-dlv-go)
+    (require 'dap-gdb-lldb)
+    (require 'dap-python)
+    (setq dap-python-debugger 'debugpy)
+    (dap-register-debug-template
+     "Python :: Run pytest (at point)"
+     (list :type "python-test-at-point"
+           :args ""
+           :program nil
+           :module "pytest"
+           :request "launch"
+           :name "Python :: Run pytest (at point)")))
+
+  (use-package lsp-ui)
+  (use-package lsp-latex)
+
+  ;; (use-package lsp-pyright
+  ;;  :ensure t
+  ;;  :custom
+  ;;  (lsp-pyright-multi-root nil)
+  ;;  :hook (python-mode . (lambda ()
+  ;;                          (require 'lsp-pyright)
+  ;;                          (lsp))))  ; or lsp-deferred
 
 
-
-      (use-package lsp-mode
-       :init
-       ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-       (setq lsp-keymap-prefix "C-c l")
-       (setq gc-cons-threshold 100000000)
-       (setq read-process-output-max (* 1024 1024)) ;; 1mb
-       :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-              (go-mode . lsp)
-              (c++-mode . lsp)
-              (typescript-mode . lsp)
-              (vue-mode . lsp)
-              (python-mode . lsp)
-              ;; if you want which-key integration
-              (lsp-mode . lsp-enable-which-key-integration))
-       :commands lsp)
-   ;; optionally if you want to use debugger
-   (use-package dap-mode)
-   (require 'dap-dlv-go)
-   (require 'dap-gdb-lldb)
-   (require 'dap-python)
-   (setq dap-python-debugger 'debugpy)
-
-(use-package lsp-pyright
-  :ensure t
-  :hook (python-mode . (lambda ()
-                          (require 'lsp-pyright)
-                          (lsp))))  ; or lsp-deferred
-
-  
 
 #+end_src
 ** tree-sitter
@@ -828,12 +842,18 @@
 ** c/c++
 #+begin_src emacs-lisp
   (use-package c++-mode
+    :init
+    (add-to-list 'auto-mode-alist '("\\.inl\\'" . c++-mode))
     :defer t
     :ensure nil)
 
   (use-package c-mode
     :defer t
     :ensure nil)
+
+  (use-package ccls
+    :hook ((c-mode c++-mode objc-mode cuda-mode) .
+      (lambda () (require 'ccls) (lsp))))
 #+end_src
 ** python
 #+begin_src emacs-lisp
@@ -953,6 +973,10 @@ Use lua5.3 for now, as e.g. the "see" package works only for lua5.3
             (switch-to-buffer-other-window buf)
             )))
       :bind (:map sh-mode-map ("C-c C-n" . acemacs/vterm-execute-current-line)))
+
+  (use-package terminal-here
+    :config
+    (setq terminal-here-linux-terminal-command 'alacritty))
 #+end_src
 * Spell checking
 #+begin_src emacs-lisp
