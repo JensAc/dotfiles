@@ -2,7 +2,7 @@ IMAPAccount posteo
 Host posteo.de
 User jens.schneider.ac@posteo.de
 PassCmd "pass mail/posteo.de | head -n1" 
-SSLType IMAPS
+TLSType IMAPS
 CertificateFile /etc/ssl/certs/ca-certificates.crt
 
 IMAPStore posteo-remote
@@ -26,7 +26,7 @@ IMAPAccount ient
 Host mail.rwth-aachen.de
 User js199426@ient.rwth-aachen.de
 PassCmd "pass mail/js199426@ient.rwth-aachen.de@mail.rwth-aachen.de | head -n1" 
-SSLType IMAPS
+TLSType IMAPS
 CertificateFile /etc/ssl/certs/ca-certificates.crt
 PipelineDepth 1
 
@@ -50,7 +50,7 @@ IMAPAccount rwth
 Host mail.rwth-aachen.de
 User js199426@rwth-aachen.de
 PassCmd "pass mail/js199426@rwth-aachen.de@mail.rwth-aachen.de | head -n1" 
-SSLType IMAPS
+TLSType IMAPS
 CertificateFile /etc/ssl/certs/ca-certificates.crt
 PipelineDepth 1
 
