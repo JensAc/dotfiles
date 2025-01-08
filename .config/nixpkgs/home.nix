@@ -8,7 +8,7 @@ in
 
   targets.genericLinux.enable = true;
   nix = {
-    package = pkgs.nixFlakes;
+    package = pkgs.nixVersions.stable;
     extraOptions = ''
     experimental-features = nix-command flakes
   '';
@@ -43,8 +43,8 @@ in
       enable = true;
       theme.name = "Adwaita-dark";
       iconTheme = {
-        name = "Luna-Dark";
-        package = pkgs.luna-icons;
+        name = "Adwaita";
+        package = pkgs.adwaita-icon-theme;
       };
       gtk3.extraConfig = { gtk-cursor-theme-name="Bibata-Modern-Classic";};
     };
@@ -142,7 +142,7 @@ in
       gimp
       ginkgo
       glab
-      gnome.gnome-disk-utility
+      gnome-disk-utility
       gnumake
       gnupg
       go
@@ -190,6 +190,7 @@ in
       mongosh
       mu
       ncdu
+      nil
       ninja
       nix-index
       nix-prefetch
