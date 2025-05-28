@@ -122,7 +122,6 @@ in
       arandr
       bc
       cargo
-      ccls
       cfssl
       clang-tools
       cmake
@@ -164,6 +163,7 @@ in
       jq
       jwt-cli
       pkgsUnstable.k9s
+      kdePackages.kcachegrind
       khal
       kind
       ko
@@ -210,6 +210,7 @@ in
       pdftk
       rclone
       qtcreator
+      remmina
       ripgrep
       rofi
       shellcheck 
@@ -299,7 +300,7 @@ in
       enableSshSupport = true;
       defaultCacheTtl = 25000;
       maxCacheTtl = 25000;
-      pinentryPackage = pkgs.pinentry-gtk2;
+      pinentry.package = pkgs.pinentry-gtk2;
     };
 
     services.redshift = {
