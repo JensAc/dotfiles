@@ -851,9 +851,9 @@
     :defer t
     :ensure nil)
 
-  (use-package ccls
-    :hook ((c-mode c++-mode objc-mode cuda-mode) .
-      (lambda () (require 'ccls) (lsp))))
+  ;; (use-package ccls
+  ;;   :hook ((c-mode c++-mode objc-mode cuda-mode) .
+  ;;     (lambda () (require 'ccls) (lsp))))
 #+end_src
 ** python
 #+begin_src emacs-lisp
