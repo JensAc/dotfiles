@@ -18,9 +18,6 @@ in
       (import (builtins.fetchGit {
         url = https://github.com/nix-community/emacs-overlay.git;
       }))
-      (final: previous: {
-        go = pkgsUnstable.go;
-      })
     ];
 
     # Changes for qt5
@@ -96,7 +93,7 @@ in
         plugins = [ "pass" "kubectl" ];
         theme = "robbyrussell";
       };
-      initExtra = "export PATH=$HOME/.local/bin:$HOME/.krew/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:$PATH\neval \"$(direnv hook zsh)\"\neval \"$(pyenv init -)\"";
+      initContent = "export PATH=$HOME/.local/bin:$HOME/.krew/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:$PATH\neval \"$(direnv hook zsh)\"\neval \"$(pyenv init -)\"";
       profileExtra = "export PATH=$HOME/bin:$PATH $PATH";
     };
 
@@ -155,7 +152,6 @@ in
       i3lock
       inetutils
       inkscape
-      iosevka
       iosevka-bin
       isync
       jdk
