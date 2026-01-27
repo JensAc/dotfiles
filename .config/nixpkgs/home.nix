@@ -110,7 +110,7 @@ in
 
     # get some packages
     home.packages = with pkgs; [
-      AusweisApp2
+      ausweisapp
       ant
 			emacs-unstable
 			emacsPackages.mu4e
@@ -153,6 +153,7 @@ in
       inetutils
       inkscape
       iosevka-bin
+      iosevka
       isync
       jdk
       jetbrains.pycharm-community
@@ -172,7 +173,6 @@ in
       libreoffice
       libsForQt5.qt5.qtbase
       libsForQt5.qtkeychain
-      libsForQt5.yuview
       libsecret
       libtool
       libvterm
@@ -196,8 +196,7 @@ in
       nodePackages.npm
       nodePackages.prettier
       nodePackages.yaml-language-server
-      nodejs
-      noto-fonts-emoji
+      noto-fonts-color-emoji
       obs-studio
       openssl
       openvpn
@@ -239,6 +238,7 @@ in
       xsane
       yarn
       yq-go
+      yuview
       zathura
       zip
       zlib
