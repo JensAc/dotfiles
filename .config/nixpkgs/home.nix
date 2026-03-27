@@ -93,7 +93,7 @@ in
         plugins = [ "pass" "kubectl" ];
         theme = "robbyrussell";
       };
-      initContent = "export PATH=$HOME/.local/bin:$HOME/.krew/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:$PATH\neval \"$(direnv hook zsh)\"\neval \"$(pyenv init -)\"";
+      initContent = "export PATH=$PATH:$HOME/.local/bin:$HOME/.krew/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin\n";
       profileExtra = "export PATH=$HOME/bin:$PATH $PATH";
     };
 
@@ -103,6 +103,18 @@ in
         plugin = resurrect;
         extraConfig = "set -g @resurrect-strategy-nvim 'session'";
       }];
+    };
+    
+    programs.pyenv = {
+      enable = true;
+      enableZshIntegration = true;
+      rootDirectory = "/home/hic/.pyenv/";
+    };
+
+    programs.direnv = {
+      enable = true;
+      enableZshIntegration = true;
+      nix-direnv.enable = true;
     };
 
     # allow font configuration
@@ -125,7 +137,6 @@ in
       cmake-language-server
       delve
       dig
-      direnv
       element-desktop
       evince
       feh
@@ -203,6 +214,7 @@ in
       (pass.withExtensions (exts: [ exts.pass-otp ]))
       patchelf
       pdftk
+      pyright
       rclone
       qtcreator
       remmina
