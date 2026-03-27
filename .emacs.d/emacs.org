@@ -595,75 +595,56 @@
 * Completion and snippets
 #+begin_src emacs-lisp
 
-  ;; (use-package corfu
-  ;;   ;; TAB-and-Go customizations
-  ;;   :config 
-  ;;   (setq tab-always-indent 'complete)
-  ;;   :custom
-  ;;   (corfu-cycle t)             ;; Enable cycling for `corfu-next/previous'
-  ;;   (corfu-preselect-first nil) ;; Disable candidate preselection
-  ;;   (corfu-auto t )
+    (use-package cape
+      :init
+      (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+      (add-to-list 'completion-at-point-functions #'cape-file))
 
-  ;;   :init
-  ;;   (global-corfu-mode))
+    ;; append yasnippet support as described in the following link
+    ;; https://www.reddit.com/r/emacs/comments/3r9fic/best_practicestip_for_companymode_andor_yasnippet/
+    (defvar company-mode/enable-yas t "Enable yasnippet for all backends.")
+    (defun company-mode/backend-with-yas (backend)
+      (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+          backend
+        (append (if (consp backend) backend (list backend))
+                '(:with company-yasnippet))))
 
+    (use-package company
+      :demand t
+      :bind (:map company-active-map
+                  ("<tab>" . company-complete-selection)
+                  ("<down>" . company-select-next))
+      :custom
+      (company-minimum-prefix-length 1)
+      (company-idle-delay 0.1)
+      :config
+      (global-set-key (kbd "TAB") #'company-indent-or-complete-common)
+      :hook
+      (prog-mode . company-mode)
+  		(dape-repl-mode . company-mode))
 
-  ;; (use-package kind-icon
-  ;;   :ensure t
-  ;;   :after corfu
-  ;;   :custom
-  ;;   (kind-icon-default-face 'corfu-default))
+    ;;  (use-package company-bibtex
+    ;;    :after company
+    ;;    :config
+    ;;    (setq company-bibtex-bibliography "/home/urbi/Documents/diss/references.bib")
+    ;;    (add-to-list 'company-backends 'company-bibtex))
+    ;;
+    ;;  (use-package company-lua
+    ;;    :config
+    ;;    (add-to-list 'company-backends 'company-lua))
 
+    ;; (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
 
-  (use-package cape
-    :init
-    (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-    (add-to-list 'completion-at-point-functions #'cape-file))
+    (use-package company-box
+      :hook (company-mode . company-box-mode))
 
-  ;; append yasnippet support as described in the following link
-  ;; https://www.reddit.com/r/emacs/comments/3r9fic/best_practicestip_for_companymode_andor_yasnippet/
-  (defvar company-mode/enable-yas t "Enable yasnippet for all backends.")
-  (defun company-mode/backend-with-yas (backend)
-    (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
-        backend
-      (append (if (consp backend) backend (list backend))
-              '(:with company-yasnippet))))
+    ;; snippets and advanced syntax checking
+    (use-package yasnippet
+      :config
+      (yas-global-mode))
 
-  (use-package company
-    :demand t
-    :bind (:map company-active-map
-                ("<tab>" . company-complete-selection)
-                ("<down>" . company-select-next))
-    :custom
-    (company-minimum-prefix-length 1)
-    (company-idle-delay 0.1)
-    :config
-    (global-set-key (kbd "TAB") #'company-indent-or-complete-common)
-    :hook
-    (prog-mode . company-mode))
-
-  ;;  (use-package company-bibtex
-  ;;    :after company
-  ;;    :config
-  ;;    (setq company-bibtex-bibliography "/home/urbi/Documents/diss/references.bib")
-  ;;    (add-to-list 'company-backends 'company-bibtex))
-  ;;
-  ;;  (use-package company-lua
-  ;;    :config
-  ;;    (add-to-list 'company-backends 'company-lua))
-
-  ;; (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
-
-  (use-package company-box
-    :hook (company-mode . company-box-mode))
-
-  ;; snippets and advanced syntax checking
-  (use-package yasnippet
-    :config
-    (yas-global-mode))
-
-  (use-package yasnippet-snippets
-    :after yasnippet)
+    (use-package yasnippet-snippets
+      :after yasnippet)
 #+end_src
 * Programming / Development
 ** General
@@ -687,31 +668,13 @@
   (defun copy-line-path ()
     (interactive)
     (kill-new (concat (file-relative-name buffer-file-name (projectile-project-root)) ":" (number-to-string (line-number-at-pos)))))
-
 #+end_src
-** GUD
+** GUD / GDB
 #+begin_src emacs-lisp
-  ;; keep it here, however atm I don't like it
-  ;; (defvar gud-overlay
-  ;;   (let* ((ov (make-overlay (point-min) (point-min))))
-  ;;     (overlay-put ov 'face 'secondary-selection)
-  ;;     ov)
-  ;;   "Overlay variable for GUD highlighting.")
-
-  ;; (defadvice gud-display-line (after my-gud-highlight act)
-  ;;   "Highlight current line."
-  ;;   (let* ((ov gud-overlay)
-  ;;          (bf (gud-find-file true-file)))
-  ;;     (with-current-buffer bf
-  ;;       (move-overlay ov (line-beginning-position) (line-beginning-position 2)
-  ;;     ;;(move-overlay ov (line-beginning-position) (line-end-position)
-  ;;                     (current-buffer)))))
-
-  ;; (defun gud-kill-buffer ()
-  ;;   (if (derived-mode-p 'gud-mode)
-  ;;       (delete-overlay gud-overlay)))
-
-  ;; (add-hook 'kill-buffer-hook 'gud-kill-buffer)
+  (setq gdb-many-windows t)
+  (setq gdb-non-stop nil)
+  (setq gdb-non-stop-setting nil)
+  (setq gdb-switch-when-another-stopped nil)
 #+end_src
 ** Projectile
 #+begin_src emacs-lisp
@@ -739,7 +702,17 @@
 #+begin_src emacs-lisp
     (use-package cmake-mode
         :defer t)
+    (use-package cmake-integration
+        :vc (:url "https://github.com/darcamo/cmake-integration.git"
+             :rev :newest)
+  			:bind ("C-x c" . cmake-integration-transient))
 #+end_src
+** direnv
+#+begin_src emacs-lisp
+  (use-package direnv
+  	:config (direnv-mode))
+#+end_src
+
 ** Magit and forge
 #+begin_src emacs-lisp
   (use-package magit
@@ -761,71 +734,27 @@
     (add-to-list 'forge-alist '("gitlab.mainconcept.com" "gitlab.mainconcept.com/api/v4" "gitlab.mainconcept.com" forge-gitlab-repository))
     (add-to-list 'forge-alist '("github.com" "api.github.com" "github.com" forge-github-repository)))
 #+end_src
-** eglot
+** eglot / lsp / dap
 #+begin_src emacs-lisp
-  ;; (use-package eglot
-  ;;   :init
-  ;;   (setq-default eglot-workspace-configuration '((:gopls . (:usePlaceholders t))))
-  ;;   :config
-  ;;   (add-to-list 'eglot-server-programs '(tex-mode . ("digestif")))
-  ;;   ;; this was somehow required when running eglot in some Go projects
-  ;;   (setq max-specpdl-size 32000)
-  ;;   (setq max-lisp-eval-depth 8000)
-  ;;   (set-face-attribute 'eglot-highlight-symbol-face nil :underline t)
-  ;;   :hook
-  ;;   ((LaTeX-mode . eglot-ensure)
-  ;;    (c++-mode . eglot-ensure)
-  ;;    (c-mode . eglot-ensure)
-  ;;    (go-mode . eglot-ensure)
-  ;;    (sh-mode . eglot-ensure)
-  ;;    ))
-
-
-  (use-package lsp-mode
+  (use-package dape)
+  (use-package eglot
     :init
-    ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-    (setq lsp-keymap-prefix "C-c l")
-    (setq gc-cons-threshold 100000000)
-    (setq read-process-output-max (* 1024 1024)) ;; 1mb
+    (setq-default eglot-workspace-configuration '((:gopls . (:usePlaceholders t))))
     :config
-    (setq lsp-pylsp-plugins-jedi-use-pyenv-environment t)
-    :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-           (go-mode . lsp)
-           (c++-mode . lsp)
-           (typescript-mode . lsp)
-           (vue-mode . lsp)
-           (python-mode . lsp)
-           ;; if you want which-key integration
-           (lsp-mode . lsp-enable-which-key-integration))
-    :commands lsp)
-  ;; optionally if you want to use debugger
-  (use-package dap-mode
-    :config
-    (require 'dap-dlv-go)
-    (require 'dap-gdb-lldb)
-    (require 'dap-python)
-    (setq dap-python-debugger 'debugpy)
-    (dap-register-debug-template
-     "Python :: Run pytest (at point)"
-     (list :type "python-test-at-point"
-           :args ""
-           :program nil
-           :module "pytest"
-           :request "launch"
-           :name "Python :: Run pytest (at point)")))
-
-  (use-package lsp-ui)
-  (use-package lsp-latex)
-
-  ;; (use-package lsp-pyright
-  ;;  :ensure t
-  ;;  :custom
-  ;;  (lsp-pyright-multi-root nil)
-  ;;  :hook (python-mode . (lambda ()
-  ;;                          (require 'lsp-pyright)
-  ;;                          (lsp))))  ; or lsp-deferred
-
-
+    (add-to-list 'eglot-server-programs '(tex-mode . ("digestif")))
+    (add-to-list 'eglot-server-programs '(python-mode . ("pyright-langserver" "--stdio")))
+    ;; This was somehow required when running eglot in some Go projects
+    (setq max-specpdl-size 32000)
+    (setq max-lisp-eval-depth 8000)
+    (set-face-attribute 'eglot-highlight-symbol-face nil :underline t)
+    :hook
+    ((LaTeX-mode . eglot-ensure)
+     (c++-mode . eglot-ensure)
+     (c-mode . eglot-ensure)
+     (go-mode . eglot-ensure)
+     (sh-mode . eglot-ensure)
+     (python-mode . eglot-ensure)
+     ))
 
 #+end_src
 ** tree-sitter
@@ -850,10 +779,6 @@
   (use-package c-mode
     :defer t
     :ensure nil)
-
-  ;; (use-package ccls
-  ;;   :hook ((c-mode c++-mode objc-mode cuda-mode) .
-  ;;     (lambda () (require 'ccls) (lsp))))
 #+end_src
 ** python
 #+begin_src emacs-lisp
@@ -869,12 +794,6 @@
       (setq python-shell-interpreter-args "-i --simple-prompt")
 
   (use-package pyenv-mode
-    :defer t)
-#+end_src
-
-** Jupyter notebook interaction
-#+begin_src emacs-lisp
-  (use-package ein
     :defer t)
 #+end_src
 ** Yaml
@@ -923,7 +842,7 @@ Use lua5.3 for now, as e.g. the "see" package works only for lua5.3
 ** Nix 
 #+begin_src emacs-lisp
   (use-package nix-mode)
-#+end_src emacs-lisp
+  #+end_src emacs-lisp
 ** Go
 #+begin_src emacs-lisp
   (use-package go-mode
