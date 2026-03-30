@@ -128,6 +128,21 @@
     :config
     (load-theme 'dracula t))
 
+  ;; some stuff for window management
+  (use-package shackle
+    :ensure t
+    :init
+    (setq shackle-rules
+        '(
+          (compilation-mode :noselect t :align 'bottom :size 0.3)
+          (mu4e-main-mode :select t :frame t)))
+    :config
+    (shackle-mode 1))
+
+  (setq window-sides-vertical t)
+  
+  (setq transient-display-buffer-action
+        '(display-buffer-in-side-window (side . bottom) (slot . -1) (dedicated . t) (inhibit-same-window . t)))
 #+end_src
 
 * Auth source
