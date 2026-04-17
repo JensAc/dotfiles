@@ -88,16 +88,9 @@
 
   (use-package all-the-icons)
 
-  (use-package telephone-line
-    :init
-    (setq telephone-line-primary-left-separator 'telephone-line-cubed-left
-          telephone-line-secondary-left-separator 'telephone-line-cubed-hollow-left
-          telephone-line-primary-right-separator 'telephone-line-cubed-right
-          telephone-line-secondary-right-separator 'telephone-line-cubed-hollow-right)
-    (setq telephone-line-evil-use-short-tag t)
+  (use-package doom-modeline
     :config
-    (telephone-line-mode t))
-
+    (doom-modeline-mode t))
 
   (use-package rainbow-delimiters
     :hook (prog-mode . rainbow-delimiters-mode))
@@ -135,9 +128,26 @@
     (setq shackle-rules
           '(
             (compilation-mode :noselect t :align 'bottom :size 0.3)
-            (mu4e-main-mode :select t :frame t)))
+            ("*Warnings*" :ignore t)
+            ("*Async Shell Command*" :ignore t)
+            (mu4e-main-mode :select t :same t)))
     :config
     (shackle-mode 1))
+
+  (use-package popper
+    :ensure t ; or :straight t
+    :bind (("<f11>"   . popper-toggle)
+  				 ("<f12>"   . popper-cycle))
+    :init
+    (setq popper-reference-buffers
+          '("\\*Messages\\*"
+  					"Output\\*$"
+            "\\*Async Shell Command\\*"
+            help-mode
+            compilation-mode))
+  	(setq popper-display-control nil)
+  	(setq popper-group-function #'popper-group-by-projectile)
+    (popper-mode +1))
 
   (setq window-sides-vertical t)
 
@@ -670,6 +680,7 @@
   (advice-add 'base64-encode-region :before #'base64-encode-region-prefix-arg)
 
   (setq comint-terminfo-terminal "xterm-256color")
+  (setq compilation-scroll-output t)
 
   (defun endless/colorize-compilation ()
     "Colorize from `compilation-filter-start' to `point'."
