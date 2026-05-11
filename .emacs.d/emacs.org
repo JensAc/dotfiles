@@ -19,8 +19,7 @@
   (require 'package)
 
   (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                           ("org" . "https://orgmode.org/elpa/")
-                           ("elpa" . "https://elpa.gnu.org/packages/")))
+                           ("org" . "https://orgmode.org/")))
 
   (package-initialize)
   (unless package-archive-contents
@@ -694,7 +693,19 @@
   (defun copy-line-path ()
     (interactive)
     (kill-new (concat (file-relative-name buffer-file-name (projectile-project-root)) ":" (number-to-string (line-number-at-pos)))))
+
+  (setq flymake-firnge-indicator-position 'right-fringe)																			;
 #+end_src
+** claude-code
+#+begin_src emacs-lisp
+  (use-package claude-code-ide
+    :vc (:url "https://github.com/manzaltu/claude-code-ide.el" :rev :newest)
+    :bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
+    :config
+    (claude-code-ide-emacs-tools-setup)
+    (setq claude-code-ide-cli-extra-flags "--model qwen3.6")) 
+#+end_src
+
 ** GUD / GDB
 #+begin_src emacs-lisp
   (setq gdb-many-windows t)
@@ -773,6 +784,7 @@
     (setq max-specpdl-size 32000)
     (setq max-lisp-eval-depth 8000)
     (set-face-attribute 'eglot-highlight-symbol-face nil :underline t)
+    (setq eglot-max-file-watches 100000)
     :hook
     ((LaTeX-mode . eglot-ensure)
      (c++-mode . eglot-ensure)
@@ -868,7 +880,7 @@ Use lua5.3 for now, as e.g. the "see" package works only for lua5.3
 ** Nix 
 #+begin_src emacs-lisp
 (use-package nix-mode)
-#+end_src emacs-lisp
+#+end_src 
 ** Go
 #+begin_src emacs-lisp
   (use-package go-mode
