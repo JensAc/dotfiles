@@ -18,8 +18,7 @@
   ;; Initialize package sources
   (require 'package)
 
-  (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                           ("org" . "https://orgmode.org/")))
+  (setq package-archives '(("melpa" . "https://melpa.org/packages/")))
 
   (package-initialize)
   (unless package-archive-contents
@@ -307,10 +306,7 @@
     :custom ((dired-listing-switches "-agho --group-directories-first"))
     :config
     (evil-collection-define-key 'normal 'dired-mode-map
-      "h" 'dired-single-up-directory
-      "l" 'dired-single-buffer))
-
-  (use-package dired-single)
+      "h" 'dired-up-directory))
 
   (use-package all-the-icons-dired
     :hook (dired-mode . all-the-icons-dired-mode))
