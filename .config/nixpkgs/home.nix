@@ -2,7 +2,7 @@
 
 
 let
-  pkgsUnstable = import <nixos-unstable> {};
+  pkgsUnstable = import <nixos-unstable> {config = { allowUnfree = true; };};
 in
 {
 
@@ -33,6 +33,9 @@ in
 
     home.sessionVariables  = {
       EDITOR = "emacsclient";
+      ANTHROPIC_AUTH_TOKEN = "ollama";
+      ANTHROPIC_API_KEY= "";
+      ANTHROPIC_BASE_URL = "http://ollama.10.121.43.118.sslip.io";
     };
 
     # configure my favorite themes
@@ -94,7 +97,7 @@ in
         theme = "robbyrussell";
       };
       initContent = "export PATH=$PATH:$HOME/.local/bin:$HOME/.krew/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin\n";
-      profileExtra = "export PATH=$HOME/bin:$PATH $PATH";
+      profileExtra = "export PATH=\"$HOME\"/bin:\"$PATH\"";
     };
 
     programs.tmux = {
@@ -133,6 +136,7 @@ in
       cargo
       cfssl
       clang-tools
+      pkgsUnstable.claude-code
       cmake
       cmake-language-server
       delve
@@ -160,14 +164,12 @@ in
       hunspell
       hunspellDicts.de_DE
       hunspellDicts.en_US
-      i3lock
       inetutils
       inkscape
       iosevka-bin
       iosevka
       isync
       jdk
-      jetbrains.pycharm-community
       jq
       jwt-cli
       pkgsUnstable.k9s
@@ -186,7 +188,6 @@ in
       libsForQt5.qtkeychain
       libsecret
       libtool
-      libvterm
       lxappearance
       lxqt.screengrab
       libglvnd
@@ -267,7 +268,7 @@ in
     home.file.".config/rofi/config.rasi".source =~/dotfiles/.config/rofi/config.rasi;
 
     # alacritty configuration
-    home.file.".config/alacritty/alacritty.yml".source =~/dotfiles/.config/alacritty/alacritty.yml;
+    home.file.".config/alacritty/alacritty.toml".source =~/dotfiles/.config/alacritty/alacritty.toml;
 
     # git config
     home.file.".gitconfig".source =~/dotfiles/.gitconfig;
